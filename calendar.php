@@ -16,7 +16,7 @@ class calendar {
 	var $beginEndTimeDelimiter = '->';
 	var $dNoEntryMsg = 'No entry.';
 
-	var $events = false;
+	var $events = array();
 	var $status = array();
 	var $lang = false;
 	var $timezone = false;
@@ -65,28 +65,30 @@ class calendar {
 		$eventsObject = new ArrayObject();
 		
 		foreach ($events as $time => $event) {
-			//XXX 0 = $this->parseTime($time)
-        	$eventsObject[0] = $event;
+			unset($events[$time]);
+		
+        	$events[$this->getTimeKey($time)] = $event;
         }
         
-        $eventsObject->uksort(array($this, 'eventSort'));
+        ksort($events);
         
-        return $eventsObject;
+        return $events;
 	}
 	
-	function parseTime($time) {
+	//TODO multiple events at the same time
+	function getTimeKey($time) {
 		$timesArray = explode($this->beginEndTimeDelimiter, $time);
 		
-		$timesKey = array(
-			'begin' => $this->timestamp($timesArray[0]),
-			'end'	=> $this->timestamp(@$timesArray[1])
+		return $this->timestamp($timesArray[0]).'->'.$this->timestamp(@$timesArray[1]);
+	}
+	
+	function getTimeArray($timeKey) {
+		$timeArray = explode($this->beginEndTimeDelimiter, $timeKey);
+		
+		return array(
+			'begin' => (int) $timeArray[0],
+			'end'	=> (int) @$timeArray[1]
 			);
-			
-		var_dump($timesKey);
-
-		return new ArrayObject(
-			
-		);
 	}
 	
 	//TODO detect time automaticly
@@ -96,7 +98,7 @@ class calendar {
 				? strtotime($time)
 				: strtotime('+23 hours 59 minutes', strtotime($time));
 		} else {
-			return false;
+			return '';
 		}
 	}
 	
@@ -120,8 +122,10 @@ class calendar {
 		
 		$table .= "<table class=\"calendar\">\n";
 		
-		foreach ($this->events as $date => $event) {
-			$tempMonth = strftime($this->monthFormat, $date);
+		foreach ($this->events as $timeKey => $event) {
+			$date = $this->getTimeArray($timeKey);
+			
+			$tempMonth = strftime($this->monthFormat, $date['begin']);
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
 				$table .= "\t<tr class=\"month\">\n\t\t<td>".$month.
