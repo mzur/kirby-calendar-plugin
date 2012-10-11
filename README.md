@@ -109,4 +109,4 @@ Default is `No entry.`.
 
 ### The calendar template
 
-In a future version you will be able to specify the layout of the calendar in a separate template file. The only layout available is `table`.
+In a future version you will be able to specify the layout of the calendar in a separate template file. The only layout currently available is `table`.
