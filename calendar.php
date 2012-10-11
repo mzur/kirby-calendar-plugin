@@ -17,6 +17,7 @@ class calendar {
 	var $dNoEntryMsg = 'No entry.';
 
 	var $events = array();
+	var $columns = array();
 	var $status = array();
 	var $lang = false;
 	var $timezone = false;
@@ -32,9 +33,9 @@ class calendar {
 		
 		$this->lang = @$cOptions['lang'];
 		$this->timezone = @$cOptions['timezone'];
-		$this->dateFormat = @$cOptions['date'];
-		$this->monthFormat = @$cOptions['month'];
-		$this->hasTime = @$cOptions['time'];
+		$this->dateFormat = @$cOptions['dateForm'];
+		$this->monthFormat = @$cOptions['monthForm'];
+		$this->hasTime = @$cOptions['hasTime'];
 		
 		//TODO multilanguage noEntryMsg
 		$this->noEntryMsg = $this->dNoEntryMsg;
@@ -55,6 +56,10 @@ class calendar {
 		if (!$this->dateFormat) $this->dateFormat = $this->dDateFormat;
 		
 		if (!$this->monthFormat) $this->monthFormat = $this->dMonthFormat;
+		
+		foreach ($this->events as $timeKey => $event) {
+			$this->columns = array_merge($this->columns, array_diff(array_keys($event), $this->columns));
+		}
 	}
 	
 	function eventSort($a, $b) {
@@ -128,8 +133,9 @@ class calendar {
 			$tempMonth = strftime($this->monthFormat, $date['begin']);
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
-				$table .= "\t<tr class=\"month\">\n\t\t<td>".$month.
-					"</td>\n\t</tr>\n";
+				//columns+1 colspan for the date column
+				$table .= "\t<tr class=\"month\">\n\t\t<td colspan=\"".
+					(count($this->columns)+1)."\">".$month."</td>\n\t</tr>\n";
 			}
 			
 			$table .= "\t<tr";
@@ -142,7 +148,8 @@ class calendar {
 			$table .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
 			$table .= "</td>\n";
 			
-			foreach ($event as $entry) {
+			foreach ($this->columns as $column) {
+				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
 				$table .= "\t\t<td>".$entry."</td>\n";
 			}
 		}
