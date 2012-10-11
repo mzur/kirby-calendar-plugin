@@ -2,28 +2,46 @@
 
 //TODO custom templates
 function calendar($events, $options=array(), $template='table') {
-		$calendar = new calendar($events, $options);
+		$calendar = new Calendar($events, $options);
 		echo (empty($events)) ? $calendar->noEntry() : $calendar->cal($template);
 }
 
-class calendar {
+class Calendar {
 	
-	//default formats. see the doc of strftime() for the formatting syntax.
-	var $dDateFormat = '%d-%m-%Y';
-	var $dMonthFormat = '%B';
+	/** default formats. see the doc of strftime() for the formatting syntax. */
+	const DATE_FORMAT = '%d-%m-%Y';
+	const MONTH_FORMAT = '%B';
 	
-	//other defaults
-	var $beginEndTimeDelimiter = '->';
-	var $dNoEntryMsg = 'No entry.';
+	/** delimiter that divides start from end time. e.g. 01.01.70->02.01.70. */
+	const TIME_DELIMITER = '->';
+	/** default message, when no entry is available. */
+	const NO_ENTRY_MSG = 'No entry.';
 
+    /** the array of events. */
 	var $events = array();
+	/** the keys of all event arrays. the columns in the table layout. */
 	var $columns = array();
 	var $status = array();
+	/** 
+	 * language for the locale settings. must be RFC 1766 or ISO 639 valid.
+	 * e.g. en_US or de_DE.
+	 */
 	var $lang = false;
+	/**
+	 * timezone for decoding the input date-string. see http://php.net/manual/en/timezones.php
+	 * for supported timezones. default is the server's timezone.
+	 */
 	var $timezone = false;
+	/** format of the date (start and end) displayed for every event. */
 	var $dateFormat = false;
+	/** format of the month, which divides the events. */
 	var $monthFormat = false;
-	var $hasTime = false;
+	/**
+	 * flag for input with only dates and no time. if 'false' the time will be
+	 * set +23:59
+	 */	
+	var $hasTime = true;
+	/** message, when no entry is available. */
 	var $noEntryMsg = false;
 	
 	function __construct($cEvents, $cOptions=array()) {
@@ -36,9 +54,7 @@ class calendar {
 		$this->dateFormat = @$cOptions['dateForm'];
 		$this->monthFormat = @$cOptions['monthForm'];
 		$this->hasTime = @$cOptions['hasTime'];
-		
-		//TODO multilanguage noEntryMsg
-		$this->noEntryMsg = $this->dNoEntryMsg;
+		$this->noEntryMsg = @$cOptions['noEntryMsg'];
 		
 		$this->configure();
 	}
@@ -53,28 +69,24 @@ class calendar {
 			date_default_timezone_set($this->timezone);
 		}
 		
-		if (!$this->dateFormat) $this->dateFormat = $this->dDateFormat;
+		if (!$this->dateFormat) $this->dateFormat = Calendar::DATE_FORMAT;
 		
-		if (!$this->monthFormat) $this->monthFormat = $this->dMonthFormat;
+		if (!$this->monthFormat) $this->monthFormat = Calendar::MONTH_FORMAT;
 		
+		if (!$this->noEntryMsg) $this->noEntryMsg = Calendar::NO_ENTRY_MSG;
+		
+		//collect columns
 		foreach ($this->events as $timeKey => $event) {
 			$this->columns = array_merge($this->columns, array_diff(array_keys($event), $this->columns));
 		}
 	}
 	
-	function eventSort($a, $b) {
-		return $a['begin'] - $b['begin'];
-	}
-	
-	function parseEvents($events) {
-		$eventsObject = new ArrayObject();
-		
+	/** converts the input date to a timestamp an sorts from low to high. */
+	function parseEvents($events) {		
 		foreach ($events as $time => $event) {
 			unset($events[$time]);
-		
         	$events[$this->getTimeKey($time)] = $event;
         }
-        
         ksort($events);
         
         return $events;
@@ -82,13 +94,13 @@ class calendar {
 	
 	//TODO multiple events at the same time
 	function getTimeKey($time) {
-		$timesArray = explode($this->beginEndTimeDelimiter, $time);
+		$timesArray = explode(Calendar::TIME_DELIMITER, $time);
 		
 		return $this->timestamp($timesArray[0]).'->'.$this->timestamp(@$timesArray[1]);
 	}
 	
 	function getTimeArray($timeKey) {
-		$timeArray = explode($this->beginEndTimeDelimiter, $timeKey);
+		$timeArray = explode(Calendar::TIME_DELIMITER, $timeKey);
 		
 		return array(
 			'begin' => (int) $timeArray[0],
@@ -96,7 +108,7 @@ class calendar {
 			);
 	}
 	
-	//TODO detect time automaticly
+	//TODO detect time automatically
 	function timestamp($time) {
 		if ($time) {
 			return ($this->hasTime) 
@@ -120,12 +132,17 @@ class calendar {
 		}
 	}
 	
-	//TODO headlines. output sorted by headlines.
 	function table() {
 		$table = false;
 		$month = false;
 		
 		$table .= "<table class=\"calendar\">\n";
+		
+		$table .= "\t<tr>\n\t\t<th></th>\n";
+		foreach ($this->columns as $column) {
+		    $table .= "\t\t<th>".$column."</th>\n";
+		}
+		$table .= "\t</tr>\n";
 		
 		foreach ($this->events as $timeKey => $event) {
 			$date = $this->getTimeArray($timeKey);
@@ -152,6 +169,8 @@ class calendar {
 				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
 				$table .= "\t\t<td>".$entry."</td>\n";
 			}
+			
+			$table .= "\t</tr>\n";
 		}
 		
 		$table .= "</table>";
