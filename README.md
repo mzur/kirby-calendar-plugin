@@ -11,7 +11,7 @@ All you have to do is to put the `calendar.php` in the `/site/plugins` directory
 
 ### YAML input
 
-The events shown by the Calendar Plugin will be read out of a field of the page structured like this in its source `.txt`:
+The events shown by the Calendar Plugin will be read out of a field of the page, structured like this in its source `.txt`:
 
 ```yaml
 Events:
@@ -41,7 +41,7 @@ You can use different formatting for the date and time (e.g. `01-31-2012 11pm`).
 
 See [Structured Field Content](http://getkirby.com/blog/structured-field-content) for more Information about YAML and Kirby.
 
-### The template
+### The page template
 
 To include the calendar into your website you have to put the following code in the content section of your template:
 
@@ -51,7 +51,7 @@ To include the calendar into your website you have to put the following code in 
 
 `$page->events()` refers to the field of the page containing your events. If you have called it `Foo:`, you have to use `$page->foo()`.
 
-The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see below) and `'table'` is the name of the calendar template (not yet implemented, `table` is the only one available).
+The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see below) and `'table'` is the name of the calendar template (not yet implemented, see The calendar tempalte below).
 
 ### Options
 
@@ -59,9 +59,7 @@ The options are set in an array. The available options are:
 
 #### lang
 
-`lang` sets the locale for the time formatting (e.g. the names of the months). It must be a valid **RFC 1766** or **ISO 639** code. For example:
-
-```php $options = array('lang' => 'en_US'); ```
+`lang` sets the locale for the time formatting (e.g. the names of the months). It must be a valid **RFC 1766** or **ISO 639** code. For example `de_DE`.
 
 Default is `en_US`.
 
@@ -96,3 +94,19 @@ In a future version this will be done automatically for each event.
 This option is for multi language support. Here you can set the message that will be shown if no event is available.
 
 Default is `No entry.`.
+
+#### Example
+
+```php
+<?php $options = array(
+	'lang' 		=> (c::get('lang.current') === 'de') ? 'de_DE' : 'fr_FR',
+	'timezone' 	=> 'Europe/Berlin',
+	'dateForm'	=> '%d.',
+	'monthForm'	=> '%B %Y',
+	'hasTime'	=> false
+);?>
+```
+
+### The calendar template
+
+In a future version you will be able to specify the layout of the calendar in a separate template file. The only layout available is `table`.
