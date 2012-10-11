@@ -1,7 +1,7 @@
 kirby-calendar-plugin
 =====================
 
-A plugin for the [Kirby CMS](http://getkirby.com) to easily implement a event calendar.
+A plugin for the [Kirby CMS](http://getkirby.com) to easily implement an event calendar.
 
 ## Installation
 
