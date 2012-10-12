@@ -1,6 +1,5 @@
 <?php
 
-//TODO custom templates
 function calendar($events, $options=array(), $template='table') {
 		$calendar = new Calendar($events, $options);
 		echo (empty($events)) ? $calendar->noEntry() : $calendar->cal($template);
@@ -19,7 +18,7 @@ class Calendar {
 
     /** the array of events. */
 	var $events = array();
-	/** the keys of all event arrays. the columns in the table layout. */
+	/** the keys of all event arrays. e.g. the columns in the table layout. */
 	var $columns = array();
 	var $status = array();
 	/** 
@@ -127,22 +126,24 @@ class Calendar {
 	function cal($template) {
 		if ($template === 'table') {
 			return $this->table();
+		} else if ($template === 'div') {
+			return $this->div();
 		} else {
 			return 'template not supported';
 		}
 	}
 	
 	function table() {
-		$table = false;
+		$output = false;
 		$month = false;
 		
-		$table .= "<table class=\"calendar\">\n";
+		$output .= "<table class=\"calendar\">\n";
 		
-		$table .= "\t<tr>\n\t\t<th></th>\n";
+		$output .= "\t<tr>\n\t\t<th></th>\n";
 		foreach ($this->columns as $column) {
-		    $table .= "\t\t<th>".$column."</th>\n";
+		    $output .= "\t\t<th>".$column."</th>\n";
 		}
-		$table .= "\t</tr>\n";
+		$output .= "\t</tr>\n";
 		
 		foreach ($this->events as $timeKey => $event) {
 			$date = $this->getTimeArray($timeKey);
@@ -151,31 +152,76 @@ class Calendar {
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
 				//columns+1 colspan for the date column
-				$table .= "\t<tr class=\"month\">\n\t\t<td colspan=\"".
+				$output .= "\t<tr class=\"month\">\n\t\t<td colspan=\"".
 					(count($this->columns)+1)."\">".$month."</td>\n\t</tr>\n";
 			}
 			
-			$table .= "\t<tr";
-			$table .= 
+			$output .= "\t<tr";
+			$output .= 
 				(($date['end']) ? time() > $date['end'] : time() > $date['begin'])
 					? " class=\"past\">\n"
 					: ">\n";
 			
-			$table .= "\t\t<td class=\"date\">".strftime($this->dateFormat, $date['begin']);
-			$table .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
-			$table .= "</td>\n";
+			$output .= "\t\t<td class=\"date\">".strftime($this->dateFormat, $date['begin']);
+			$output .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
+			$output .= "</td>\n";
 			
 			foreach ($this->columns as $column) {
 				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
-				$table .= "\t\t<td>".$entry."</td>\n";
+				$output .= "\t\t<td>".$entry."</td>\n";
 			}
 			
-			$table .= "\t</tr>\n";
+			$output .= "\t</tr>\n";
 		}
 		
-		$table .= "</table>";
+		$output .= "</table>";
 		
-		return $table;
+		return $output;
+	}
+	
+	function div() {
+		$output = false;
+		$month = false;
+		
+		$output .= "<div class=\"calendar\">\n";
+		
+		$output .= "\t<div class=\"head\">\n";
+		foreach ($this->columns as $column) {
+		    $output .= "\t\t<div>".$column."</div>\n";
+		}
+		$output .= "\t</div>\n";
+		
+		foreach ($this->events as $timeKey => $event) {
+			$date = $this->getTimeArray($timeKey);
+			
+			$tempMonth = strftime($this->monthFormat, $date['begin']);
+			if ($month != $tempMonth) {
+				$month = $tempMonth;
+				//columns+1 colspan for the date column
+				$output .= "\t<div class=\"month\">".$month."</div>\n";
+			}
+			
+			$output .= "\t<div";
+			$output .= 
+				(($date['end']) ? time() > $date['end'] : time() > $date['begin'])
+					? " class=\"past_event\">\n"
+					: " class=\"event\">\n";
+			
+			$output .= "\t\t<time>".strftime($this->dateFormat, $date['begin']);
+			$output .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
+			$output .= "</time>\n";
+			
+			foreach ($this->columns as $column) {
+				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
+				$output .= "\t\t<div class=\"entry\">".$entry."</div>\n";
+			}
+			
+			$output .= "\t</div>\n";
+		}
+		
+		$output .= "</div>";
+		
+		return $output;
 	}
 }
 
