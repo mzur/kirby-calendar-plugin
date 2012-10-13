@@ -13,6 +13,11 @@ class Calendar {
 	
 	/** delimiter that divides start from end time. e.g. 01.01.70->02.01.70. */
 	const TIME_DELIMITER = '->';
+	/** 
+	 * delimiter that marks the number of the event, if there are multiple
+	 * events at the same time.
+	 */
+	const EVENT_NO_DELIMITER = '#';
 	/** default message, when no entry is available. */
 	const NO_ENTRY_MSG = 'No entry.';
 
@@ -86,26 +91,40 @@ class Calendar {
 	function parseEvents($events) {		
 		foreach ($events as $time => $event) {
 			unset($events[$time]);
-        	$events[$this->getTimeKey($time)] = $event;
+			do {
+				$timeKey = $this->getTimeKey($time);
+			} while (array_key_exists($timeKey, $events));
+			
+        	$events[$timeKey] = $event;
         }
         ksort($events);
         
         return $events;
 	}
 	
-	//TODO multiple events at the same time
+	//TODO multiple events at the same time. NOT POSSIBLE BECAUSE OF YAML INPUT.
 	function getTimeKey($time) {
 		$timesArray = explode(Calendar::TIME_DELIMITER, $time);
-		return $this->timestamp($timesArray[0]).
+		$timeKey = $this->timestamp($timesArray[0]).
 			Calendar::TIME_DELIMITER.$this->timestamp(@$timesArray[1]);
+			
+		return $timeKey.Calendar::EVENT_NO_DELIMITER.$this->getEventNumber($timeKey);
+	}
+	
+	function getEventNumber($timeKey) {
+		$tmp = explode(Calendar::EVENT_NO_DELIMITER, $timeKey);
+		return ((int) @$tmp[1])+1;
 	}
 	
 	function getTimeArray($timeKey) {
 		$timeArray = explode(Calendar::TIME_DELIMITER, $timeKey);
+		$begin = (int) $timeArray[0];
+		$endArray = explode(Calendar::EVENT_NO_DELIMITER, @$timeArray[1]);
+		$end = @$endArray[0];
 		
 		return array(
-			'begin' => (int) $timeArray[0],
-			'end'	=> (int) @$timeArray[1]
+			'begin' => $begin,
+			'end'	=> $end
 			);
 	}
 	
