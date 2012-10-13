@@ -46,8 +46,6 @@ class Calendar {
 	function __construct($cEvents, $cOptions=array()) {
 		if (!$cEvents) return false;
 		
-		$this->events = $this->parseEvents($cEvents);
-		
 		$this->lang = @$cOptions['lang'];
 		$this->timezone = @$cOptions['timezone'];
 		$this->dateFormat = @$cOptions['dateForm'];
@@ -55,7 +53,16 @@ class Calendar {
 		$this->hasTime = @$cOptions['hasTime'];
 		$this->noEntryMsg = @$cOptions['noEntryMsg'];
 		
+		// timezone must be set, before the events are parsed! otherwise the
+		// timestamps will be adjusted.
 		$this->configure();
+		
+		$this->events = $this->parseEvents($cEvents);
+		
+		//collect columns
+		foreach ($this->events as $timeKey => $event) {
+			$this->columns = array_merge($this->columns, array_diff(array_keys($event), $this->columns));
+		}
 	}
 	
 	//TODO errormessages
@@ -73,11 +80,6 @@ class Calendar {
 		if (!$this->monthFormat) $this->monthFormat = Calendar::MONTH_FORMAT;
 		
 		if (!$this->noEntryMsg) $this->noEntryMsg = Calendar::NO_ENTRY_MSG;
-		
-		//collect columns
-		foreach ($this->events as $timeKey => $event) {
-			$this->columns = array_merge($this->columns, array_diff(array_keys($event), $this->columns));
-		}
 	}
 	
 	/** converts the input date to a timestamp an sorts from low to high. */
@@ -94,8 +96,8 @@ class Calendar {
 	//TODO multiple events at the same time
 	function getTimeKey($time) {
 		$timesArray = explode(Calendar::TIME_DELIMITER, $time);
-		
-		return $this->timestamp($timesArray[0]).'->'.$this->timestamp(@$timesArray[1]);
+		return $this->timestamp($timesArray[0]).
+			Calendar::TIME_DELIMITER.$this->timestamp(@$timesArray[1]);
 	}
 	
 	function getTimeArray($timeKey) {
@@ -144,6 +146,7 @@ class Calendar {
 		    $output .= "\t\t<th>".$column."</th>\n";
 		}
 		$output .= "\t</tr>\n";
+		
 		
 		foreach ($this->events as $timeKey => $event) {
 			$date = $this->getTimeArray($timeKey);
