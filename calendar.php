@@ -166,26 +166,38 @@ class Calendar {
 		}
 		$output .= "\t</tr>\n";
 		
+		$currentTime = getdate(strtotime('now'));
 		
 		foreach ($this->events as $timeKey => $event) {
 			$date = $this->getTimeArray($timeKey);
 			
-			$tempMonth = strftime($this->monthFormat, $date['begin']);
+			$begin = getdate($date['begin']);
+			$end = ($date['end']) ? getdate($date['end']) : false;
+			
+			$tempMonth = strftime($this->monthFormat, $begin[0]);
+			
+			$monthIsPast = ($begin[0] < $currentTime[0] 
+							&& $begin['month'] != $currentTime['month'])
+								? true
+								: false;
+
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
 				//columns+1 colspan for the date column
-				$output .= "\t<tr class=\"month\">\n\t\t<td colspan=\"".
+				$output .= "\t<tr class=\"month";
+				$output .= ($monthIsPast) ? " past" : "";
+				$output .= "\">\n\t\t<td colspan=\"".
 					(count($this->columns)+1)."\">".$month."</td>\n\t</tr>\n";
 			}
 			
 			$output .= "\t<tr";
 			$output .= 
-				(($date['end']) ? time() > $date['end'] : time() > $date['begin'])
+				(($end) ? time() > $end[0] : time() > $begin[0])
 					? " class=\"past\">\n"
 					: ">\n";
 			
-			$output .= "\t\t<td class=\"date\">".strftime($this->dateFormat, $date['begin']);
-			$output .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
+			$output .= "\t\t<td class=\"date\">".strftime($this->dateFormat, $begin[0]);
+			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';
 			$output .= "</td>\n";
 			
 			foreach ($this->columns as $column) {
@@ -213,24 +225,37 @@ class Calendar {
 		}
 		$output .= "\t</div>\n";
 		
+		$currentTime = getdate(strtotime('now'));
+		
 		foreach ($this->events as $timeKey => $event) {
 			$date = $this->getTimeArray($timeKey);
 			
-			$tempMonth = strftime($this->monthFormat, $date['begin']);
+			$begin = getdate($date['begin']);
+			$end = ($date['end']) ? getdate($date['end']) : false;
+			
+			$tempMonth = strftime($this->monthFormat, $begin[0]);
+			
+			$monthIsPast = ($begin[0] < $currentTime[0] 
+							&& $begin['month'] != $currentTime['month'])
+								? true
+								: false;
+
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
 				//columns+1 colspan for the date column
-				$output .= "\t<div class=\"month\">".$month."</div>\n";
+				$output .= "\t<div class=\"month";
+				$output .= ($monthIsPast) ? " past" : "";
+				$output .= "\">".$month."</div>\n";
 			}
 			
 			$output .= "\t<div";
 			$output .= 
-				(($date['end']) ? time() > $date['end'] : time() > $date['begin'])
+				(($end) ? time() > $end[0] : time() > $begin[0])
 					? " class=\"past_event\">\n"
 					: " class=\"event\">\n";
 			
-			$output .= "\t\t<time>".strftime($this->dateFormat, $date['begin']);
-			$output .= ($date['end']) ? ' - '.strftime($this->dateFormat, $date['end']) : '';
+			$output .= "\t\t<time>".strftime($this->dateFormat, $begin[0]);
+			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';
 			$output .= "</time>\n";
 			
 			foreach ($this->columns as $column) {
