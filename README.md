@@ -51,7 +51,7 @@ To include the calendar into your website you have to put the following code in 
 
 `$page->events()` refers to the field of the page containing your events. If you have called it `Foo:`, you have to use `$page->foo()`.
 
-The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see **Options** below) and `'table'` is the name of the calendar template (see **The calendar tempalte below**).
+The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see **Options** below) and `'table'` is the name of the calendar template (see **The calendar tempalte** below).
 
 ### Options
 
