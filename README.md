@@ -51,7 +51,7 @@ To include the calendar into your website you have to put the following code in 
 
 `$page->events()` refers to the field of the page containing your events. If you have called it `Foo:`, you have to use `$page->foo()`.
 
-The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see below) and `'table'` is the name of the calendar template (not yet implemented, see The calendar tempalte below).
+The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see below) and `'table'` is the name of the calendar template (see The calendar tempalte below).
 
 ### Options
 
@@ -109,4 +109,97 @@ Default is `No entry.`.
 
 ### The calendar template
 
-In a future version you will be able to specify the layout of the calendar in a separate template file. The only layout currently available is `table`.
+In a future version you will be able to specify the layout of the calendar in a separate template file. The only layouts currently available are `table` and `div`.
+
+You are able to style the calendar via several CSS classes. See the example HTML outputs below:
+
+#### table
+
+This output is from 15th October 2012.
+
+```html
+<table class="calendar">
+	<tr>
+		<th></th>
+		<th>Location</th>
+		<th>Title</th>
+		<th>Host</th>
+	</tr>
+	<tbody>
+		<tr class="month past">
+			<td colspan="4">January 2012</td>
+		</tr>
+		<tr class="past">
+			<td class="date">01.01.</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr class="month">
+			<td colspan="4">October 2012</td>
+		</tr>
+		<tr>
+			<td class="date">05.10. - 30.10.</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr class="past">
+			<td class="date">06.10.</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr class="month">
+			<td colspan="4">January 2013</td>
+		</tr>
+		<tr>
+			<td class="date">01.01.</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+```
+
+#### div
+
+This output is from 15th October 2012.
+
+```html
+<div class="calendar">
+	<div class="head">
+		<div>Location</div>
+		<div>Title</div>
+		<div>Host</div>
+	</div>
+	<div class="month past">January 2012</div>
+	<div class="past_event">
+		<time>01.01.</time>
+		<div class="entry"></div>
+		<div class="entry"></div>
+		<div class="entry"></div>
+	</div>
+	<div class="month">October 2012</div>
+	<div class="event">
+		<time>05.10. - 30.10.</time>
+		<div class="entry"></div>
+		<div class="entry"></div>
+		<div class="entry"></div>
+	</div>
+	<div class="past_event">
+		<time>06.10.</time>
+		<div class="entry"></div>
+		<div class="entry"></div>
+		<div class="entry"></div>
+	</div>
+	<div class="month">January 2013</div>
+	<div class="event">
+		<time>01.01.</time>
+		<div class="entry"></div>
+		<div class="entry"></div>
+		<div class="entry"></div>
+	</div>
+</div>
+```
