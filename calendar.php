@@ -248,11 +248,11 @@ class Calendar {
 				$output .= "\">".$month."</div>\n";
 			}
 			
-			$output .= "\t<div";
+			$output .= "\t<div class=\"event";
 			$output .= 
 				(($end) ? time() > $end[0] : time() > $begin[0])
-					? " class=\"past_event\">\n"
-					: " class=\"event\">\n";
+					? " past\">\n"
+					: "\">\n";
 			
 			$output .= "\t\t<time>".strftime($this->dateFormat, $begin[0]);
 			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';

@@ -175,7 +175,7 @@ This output is from 15th October 2012.
 		<div>Host</div>
 	</div>
 	<div class="month past">January 2012</div>
-	<div class="past_event">
+	<div class="event past">
 		<time>01.01.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
@@ -188,7 +188,7 @@ This output is from 15th October 2012.
 		<div class="entry"></div>
 		<div class="entry"></div>
 	</div>
-	<div class="past_event">
+	<div class="event past">
 		<time>06.10.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
