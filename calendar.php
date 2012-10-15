@@ -196,9 +196,10 @@ class Calendar {
 					? " class=\"past\">\n"
 					: ">\n";
 			
-			$output .= "\t\t\t<td class=\"date\">".strftime($this->dateFormat, $begin[0]);
+			$output .= "\t\t\t<td><time datetime=\"".$begin[0]."\">".
+				strftime($this->dateFormat, $begin[0]);
 			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';
-			$output .= "</td>\n";
+			$output .= "</time></td>\n";
 			
 			foreach ($this->columns as $column) {
 				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
@@ -242,7 +243,6 @@ class Calendar {
 
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
-				//columns+1 colspan for the date column
 				$output .= "\t<div class=\"month";
 				$output .= ($monthIsPast) ? " past" : "";
 				$output .= "\">".$month."</div>\n";
@@ -254,7 +254,8 @@ class Calendar {
 					? " past\">\n"
 					: "\">\n";
 			
-			$output .= "\t\t<time>".strftime($this->dateFormat, $begin[0]);
+			$output .= "\t\t<time datetime=\"".$begin[0]."\">".
+				strftime($this->dateFormat, $begin[0]);
 			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';
 			$output .= "</time>\n";
 			

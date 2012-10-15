@@ -130,7 +130,7 @@ This output is from 15th October 2012.
 			<td colspan="4">January 2012</td>
 		</tr>
 		<tr class="past">
-			<td class="date">01.01.</td>
+			<td><time datetime="1325458740">01.01.</time></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -139,13 +139,13 @@ This output is from 15th October 2012.
 			<td colspan="4">October 2012</td>
 		</tr>
 		<tr>
-			<td class="date">05.10. - 30.10.</td>
+			<td><time datetime="1349474340">05.10. - 30.10.</time></td>
 			<td></td>
 			<td></td>
 			<td></td>
 		</tr>
 		<tr class="past">
-			<td class="date">06.10.</td>
+			<td><time datetime="1349560740">06.10.</time></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -154,7 +154,7 @@ This output is from 15th October 2012.
 			<td colspan="4">January 2013</td>
 		</tr>
 		<tr>
-			<td class="date">01.01.</td>
+			<td><time datetime="1357081140">01.01.</time></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -176,27 +176,27 @@ This output is from 15th October 2012.
 	</div>
 	<div class="month past">January 2012</div>
 	<div class="event past">
-		<time>01.01.</time>
+		<time datetime="1325458740">01.01.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
 		<div class="entry"></div>
 	</div>
 	<div class="month">October 2012</div>
 	<div class="event">
-		<time>05.10. - 30.10.</time>
+		<time datetime="1349474340">05.10. - 30.10.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
 		<div class="entry"></div>
 	</div>
 	<div class="event past">
-		<time>06.10.</time>
+		<time datetime="1349560740">06.10.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
 		<div class="entry"></div>
 	</div>
 	<div class="month">January 2013</div>
 	<div class="event">
-		<time>01.01.</time>
+		<time datetime="1357081140">01.01.</time>
 		<div class="entry"></div>
 		<div class="entry"></div>
 		<div class="entry"></div>
