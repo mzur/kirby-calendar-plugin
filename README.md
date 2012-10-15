@@ -37,7 +37,7 @@ beginDate [beginTime] [-> endDate [endTime]]:
 	[...as much categorys as you like]
 ```
 
-You can use different formatting for the date and time (e.g. `01-31-2012 11pm`). If your preferred formatting is not supported, check the `'timezone'` option (see Options below).
+You can use different formatting for the date and time (e.g. `01-31-2012 11pm`). If your preferred formatting is not supported, check the `'timezone'` option (see **Options** below).
 
 See [Structured Field Content](http://getkirby.com/blog/structured-field-content) for more Information about YAML and Kirby.
 
@@ -51,7 +51,7 @@ To include the calendar into your website you have to put the following code in 
 
 `$page->events()` refers to the field of the page containing your events. If you have called it `Foo:`, you have to use `$page->foo()`.
 
-The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see below) and `'table'` is the name of the calendar template (see The calendar tempalte below).
+The second and third parameters of `calendar()` are both optional. `$options` is the array of options (see **Options** below) and `'table'` is the name of the calendar template (see **The calendar tempalte below**).
 
 ### Options
 
