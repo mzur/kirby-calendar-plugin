@@ -164,7 +164,7 @@ class Calendar {
 		foreach ($this->columns as $column) {
 		    $output .= "\t\t<th>".$column."</th>\n";
 		}
-		$output .= "\t</tr>\n";
+		$output .= "\t</tr>\n\t<tbody>\n";
 		
 		$currentTime = getdate(strtotime('now'));
 		
@@ -184,31 +184,31 @@ class Calendar {
 			if ($month != $tempMonth) {
 				$month = $tempMonth;
 				//columns+1 colspan for the date column
-				$output .= "\t<tr class=\"month";
+				$output .= "\t\t<tr class=\"month";
 				$output .= ($monthIsPast) ? " past" : "";
-				$output .= "\">\n\t\t<td colspan=\"".
-					(count($this->columns)+1)."\">".$month."</td>\n\t</tr>\n";
+				$output .= "\">\n\t\t\t<td colspan=\"".
+					(count($this->columns)+1)."\">".$month."</td>\n\t\t</tr>\n";
 			}
 			
-			$output .= "\t<tr";
+			$output .= "\t\t<tr";
 			$output .= 
 				(($end) ? time() > $end[0] : time() > $begin[0])
 					? " class=\"past\">\n"
 					: ">\n";
 			
-			$output .= "\t\t<td class=\"date\">".strftime($this->dateFormat, $begin[0]);
+			$output .= "\t\t\t<td class=\"date\">".strftime($this->dateFormat, $begin[0]);
 			$output .= ($end) ? ' - '.strftime($this->dateFormat, $end[0]) : '';
 			$output .= "</td>\n";
 			
 			foreach ($this->columns as $column) {
 				$entry = (array_key_exists($column, $event)) ? $event[$column] : '';
-				$output .= "\t\t<td>".$entry."</td>\n";
+				$output .= "\t\t\t<td>".$entry."</td>\n";
 			}
 			
-			$output .= "\t</tr>\n";
+			$output .= "\t\t</tr>\n";
 		}
 		
-		$output .= "</table>";
+		$output .= "\t</tbody>\n</table>";
 		
 		return $output;
 	}
