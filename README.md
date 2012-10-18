@@ -5,7 +5,7 @@ A plugin for the [Kirby CMS](http://getkirby.com) to easily implement an event c
 
 ## Installation
 
-All you have to do is to put the `calendar.php` in the `/site/plugins` directory.
+All you have to do is to put the `calendar` directory in `/site/plugins`.
 
 ## Usage
 
