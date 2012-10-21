@@ -18,7 +18,7 @@ Events:
 01.01.2012 10:00 -> 02.01.2012 10:00:
 	Location: The Pub
 	Price: free
-	
+
 03.01.2012 -> 04.01.2012:
 	Location: Concert hall
 	Price: a beer
@@ -109,9 +109,10 @@ Default is `No entry.`.
 
 ### The calendar template
 
-In a future version you will be able to specify the layout of the calendar in a separate template file. The only layouts currently available are `table` and `div`.
-
-You are able to style the calendar via several CSS classes. See the example HTML outputs below:
+There are two default templates for the calendar output at the moment, `div` and
+`table`. You can change them in the `/templates` directory to your needs. You
+can also easily implement you own template *mytemplate* and just load it with
+*'mytemplate'* as the last paramater of the calendar function.
 
 #### table
 
@@ -165,41 +166,61 @@ This output is from 15th October 2012.
 
 #### div
 
-This output is from 15th October 2012.
+This output is from 21st October 2012.
 
 ```html
-<div class="calendar">
-	<div class="head">
-		<div>Location</div>
-		<div>Title</div>
-		<div>Host</div>
+<section class="calendar">
+	<div class="row header">
+		<div class="item">Date</div>
+		<div class="item">Location</div>
+		<div class="item">Price</div>
+		<div class="item">Description</div>
 	</div>
-	<div class="month past">January 2012</div>
-	<div class="event past">
-		<time datetime="1325458740">01.01.</time>
-		<div class="entry"></div>
-		<div class="entry"></div>
-		<div class="entry"></div>
+	<div class="row month past">
+		<div class="item">January</div>
 	</div>
-	<div class="month">October 2012</div>
-	<div class="event">
-		<time datetime="1349474340">05.10. - 30.10.</time>
-		<div class="entry"></div>
-		<div class="entry"></div>
-		<div class="entry"></div>
+	<div class="row past">
+		<time datetime="2012-01-01T10:00:00Z">
+				01-01-2012 - 02-01-2012
+		</time>
+		<div class="item">The Pub</div>
+		<div class="item">free</div>
+		<div class="item"></div>
 	</div>
-	<div class="event past">
-		<time datetime="1349560740">06.10.</time>
-		<div class="entry"></div>
-		<div class="entry"></div>
-		<div class="entry"></div>
+	<div class="row past">
+		<time datetime="2012-01-03T00:00:00Z">
+				03-01-2012 - 04-01-2012
+		</time>
+		<div class="item">Concert hall</div>
+		<div class="item">a beer</div>
+		<div class="item"></div>
 	</div>
-	<div class="month">January 2013</div>
-	<div class="event">
-		<time datetime="1357081140">01.01.</time>
-		<div class="entry"></div>
-		<div class="entry"></div>
-		<div class="entry"></div>
+	<div class="row past">
+		<time datetime="2012-01-05T00:00:00Z">
+				05-01-2012
+		</time>
+		<div class="item">couch</div>
+		<div class="item">priceless</div>
+		<div class="item">chillin'</div>
 	</div>
-</div>
+</section>
 ```
+
+### iCal output
+
+There's also an iCal template predefined. Note that you have to make sure that
+predefined iCal constants such as `summary`, `description` and `location` must
+be specified in your XAML input to get a proper and usable iCal output.
+
+To get an additional iCal output, just create a subpage with an `ical.txt` in
+it. Then, you are able to create a custom template `ical.php` in your
+`templates/` folder. Just insert the following lines of code there;
+
+```php
+<?php
+$data = $page->parent()->events();
+calendar(yaml($data), array(), 'ical');
+?>
+```
+Now you're able to set a link to this subpage which will return an iCal version
+of your calendar.
