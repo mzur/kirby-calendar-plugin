@@ -26,7 +26,7 @@
  Home:
  	<https://github.com/mzur/kirby-calendar-plugin>
 
- Authors: 	
+ Authors:
  	the Inspired Ones <http://the-inspired-ones.de/>
  	 - Christoph Bach <http://christoph-bach.net/>
  	 - Martin Zurowietz
@@ -114,13 +114,13 @@ class Event {
 			($this->end)? $this->end[0] : $this->begin[0])."\n";
 
 		if (array_key_exists('summary', $info))
-			$returnStr .= "SUMMARY:".$info['summary'];
+			$returnStr .= "SUMMARY:".$info['summary']."\n";
 
 		if (array_key_exists('description', $info))
-			$returnStr .= "DESCRIPTION:".$info['description'];
+			$returnStr .= "DESCRIPTION:".$info['description']."\n";
 
 		if (array_key_exists('location', $info))
-			$returnStr .= "LOCATION:".$info['location'];
+			$returnStr .= "LOCATION:".$info['location']."\n";
 
 		$returnStr .= "CLASS:PUBLIC \n";
 		$returnStr .= "END:VEVENT \n";
