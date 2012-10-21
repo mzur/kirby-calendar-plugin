@@ -224,3 +224,8 @@ calendar(yaml($data), array(), 'ical');
 ```
 Now you're able to set a link to this subpage which will return an iCal version
 of your calendar.
+
+## Compatibility
+
+This plugin should run on PHP 5.3 and above. If you experience any problems,
+have a look at the [Forum Thread](http://getkirby.com/forum/code-snippets/topic:138) or open an issue on GitHub.
