@@ -111,7 +111,7 @@ class Event {
 
 		$returnStr .= "DTSTART:".gmdate("Ymd\TH:i:s\Z",$this->begin[0])."\n";
 		$returnStr .= "DTEND:".gmdate("Ymd\TH:i:s\Z",
-													($this->end)? $this->end[0] : $this->begin[0])."\n";
+			($this->end)? $this->end[0] : $this->begin[0])."\n";
 
 		if (array_key_exists('summary', $info))
 			$returnStr .= "SUMMARY:".$info['summary'];
