@@ -1,43 +1,86 @@
 <?php
+/*
+ ** The MIT License **
+
+ Copyright (c) 2012 Christoph Bach (chbach), Martin Zurowietz (mzur)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+
+ Home:
+ 	<https://github.com/mzur/kirby-calendar-plugin>
+
+ Authors: 	
+ 	the Inspired Ones <http://the-inspired-ones.de/>
+ 	 - Christoph Bach <http://christoph-bach.net/>
+ 	 - Martin Zurowietz
+
+ Requirements:
+ 	- PHP 5.3
+*/
 
 class Calendar {
 
+	/** Default hasTime value. See $hasTime below. */
 	public static $HAS_TIME = true;
-	/** delimiter that divides start from end time. e.g. 01.01.70->02.01.70. */
+	/** Delimiter that divides start from end time. e.g. 01.01.70->02.01.70. */
 	public static $TIME_DELIMITER = '->';
 
-	/** default formats. see the doc of strftime() for the formatting syntax. */
+	/** Default formats. See the doc of strftime() for the formatting syntax. */
 	const DATE_FORMAT = '%d-%m-%Y';
 	const MONTH_FORMAT = '%B';
-	/** default message, when no entry is available. */
+	/** Default message, if no entry is available. */
 	const NO_ENTRY_MSG = 'No entry.';
 
-	/** the array of events. */
+	/** The array of events. */
 	private $events = array();
-	/** the keys of all event arrays. e.g. the columns in the table layout. */
+	/** The keys of all event arrays. e.g. the columns in the table layout. */
 	private $columns = array();
 	/**
-	 * language for the locale settings. must be RFC 1766 or ISO 639 valid.
+	 * Language for the locale settings. must be RFC 1766 or ISO 639 valid.
 	 * e.g. en_US or de_DE.
 	 */
 	private $lang = false;
 	/**
-	 * timezone for decoding the input date-string. see http://php.net/manual/en/timezones.php
-	 * for supported timezones. default is the server's timezone.
+	 * Timezone for decoding the input date-string. See http://php.net/manual/en/timezones.php
+	 * for supported timezones. Default is the server's timezone.
 	 */
 	private $timezone = false;
-	/** format of the date (start and end) displayed for every event. */
+	/** Format of the date (start and end) displayed for every event. */
 	private $dateFormat = false;
-	/** format of the month, which divides the events. */
+	/** Format of the month, which divides the events. */
 	private $monthFormat = false;
 	/**
-	 * flag for input with only dates and no time. if 'false' the time will be
-	 * set +23:59
+	 * Flag for input with only dates and no time. if 'false' the time will be
+	 * set +23:59.
 	 */
 	private $hasTime = false;
-	/** message, when no entry is available. */
+	/** Message, if no entry is available. */
 	private $noEntryMsg = false;
 
+	/**
+	 * Loads the events and sets all options for this calendar.
+	 * @param array $cEvents
+	 *		The array of events parsed from the YAML output.
+	 * @param array $cOptions
+	 * 		The options array.
+	 */
 	function __construct($cEvents, $cOptions=array()) {
 		if (!$cEvents) return false;
 
@@ -48,18 +91,19 @@ class Calendar {
 		$this->hasTime = @$cOptions['hasTime'];
 		$this->noEntryMsg = @$cOptions['noEntryMsg'];
 
-		// timezone must be set, before the events are parsed! otherwise the
+		// Timezone must be set, before the events are parsed! Otherwise the
 		// timestamps will be adjusted.
 		$this->configure();
 
 		$this->events = $this->parseEvents($cEvents);
 
-		//collect columns
+		//Collect columns
 		foreach ($this->events as $event) {
 			$this->columns = array_merge($this->columns, array_diff($event->getColNames(), $this->columns));
 		}
 	}
 
+	/** Sets the defined options if available. Sets the defaults otherwise. */
 	private function configure() {
 		if (!$this->hasTime) $this->hasTime = Calendar::$HAS_TIME;
 
@@ -78,7 +122,7 @@ class Calendar {
 		if (!$this->noEntryMsg) $this->noEntryMsg = Calendar::NO_ENTRY_MSG;
 	}
 
-	/** returns an array with Event's for every entry of $events. */
+	/** Returns an array with Event's for every entry of $events. */
 	private function parseEvents($events) {
 		$ret = array();
 
