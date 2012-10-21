@@ -110,55 +110,55 @@ Default is `No entry.`.
 ### The calendar template
 
 There are two default templates for the calendar output at the moment, `div` and
-`table`. You can change them in the `/templates` directory to your needs. You
-can also easily implement you own template *mytemplate* and just load it with
+`table`. You can change them in the `templates/` directory to your needs. You
+can also easily implement your own template *mytemplate* and just load it with
 *'mytemplate'* as the last paramater of the calendar function.
 
 #### table
 
-This output is from 15th October 2012.
+This output is from 21st October 2012.
 
 ```html
 <table class="calendar">
 	<tr>
-		<th></th>
+		<th>Date</th>
 		<th>Location</th>
-		<th>Title</th>
-		<th>Host</th>
+		<th>Price</th>
+		<th>Description</th>
 	</tr>
 	<tbody>
 		<tr class="month past">
-			<td colspan="4">January 2012</td>
+			<td colspan="4">January</td>
 		</tr>
-		<tr class="past">
-			<td><time datetime="1325458740">01.01.</time></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr class="month">
-			<td colspan="4">October 2012</td>
-		</tr>
-		<tr>
-			<td><time datetime="1349474340">05.10. - 30.10.</time></td>
-			<td></td>
-			<td></td>
+		<tr class="past" >
+			<td>
+				<time datetime="2012-01-01T10:00:00Z">
+					01-01-2012 - 02-01-2012
+				</time>
+			</td>
+			<td>The Pub</td>
+			<td>free</td>
 			<td></td>
 		</tr>
-		<tr class="past">
-			<td><time datetime="1349560740">06.10.</time></td>
-			<td></td>
-			<td></td>
+		<tr class="past" >
+			<td>
+				<time datetime="2012-01-03T00:00:00Z">
+					03-01-2012- 04-01-2012
+				</time>
+			</td>
+			<td>Concert hall</td>
+			<td>a beer</td>
 			<td></td>
 		</tr>
-		<tr class="month">
-			<td colspan="4">January 2013</td>
-		</tr>
-		<tr>
-			<td><time datetime="1357081140">01.01.</time></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		<tr class="past" >
+			<td>
+				<time datetime="2012-01-05T00:00:00Z">
+					05-01-2012
+				</time>
+			</td>
+			<td>couch</td>
+			<td>priceless</td>
+			<td>chillin'</td>
 		</tr>
 	</tbody>
 </table>
