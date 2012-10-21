@@ -209,12 +209,12 @@ This output is from 21st October 2012.
 ### iCal output
 
 There's also an iCal template predefined. Note that you have to make sure that
-predefined iCal constants such as `summary`, `description` and `location` must
-be specified in your XAML input to get a proper and usable iCal output.
+given iCal constants such as `summary`, `description` and `location` must
+be specified in your YAML input to get a proper and usable iCal output.
 
 To get an additional iCal output, just create a subpage with an `ical.txt` in
 it. Then, you are able to create a custom template `ical.php` in your
-`templates/` folder. Just insert the following lines of code there;
+`templates/` folder. Just insert the following lines of code there:
 
 ```php
 <?php
