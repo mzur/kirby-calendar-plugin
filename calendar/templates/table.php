@@ -30,7 +30,7 @@
 	$month = $tempMonth;
 ?>
 	<tr class="month<?php echo ($monthIsPast)? ' past' : '';?>">
-		<td colspan="<?php echo count($eventsArr)+1; ?>"><?php echo $month ?></td>
+		<td colspan="<?php echo count($eventsArr)+1; ?>"><?php echo utf8_encode($month) ?></td>
 	</tr>
 <?php endif; ?>
 	<tr<?php if (($end && $end[0] < time()) || $begin[0] < time()): ?> class="past" <?php endif; ?>>

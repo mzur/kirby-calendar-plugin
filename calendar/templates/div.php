@@ -30,7 +30,7 @@
 	$month = $tempMonth;
 ?>
 	<div class="row month<?php echo ($monthIsPast)? ' past' : '';?>">
-		<div class="item"><?php echo $month ?></div>
+		<div class="item"><?php echo utf8_encode($month) ?></div>
 	</div>
 <?php endif; ?>
 	<div class="row<?php if (($end && $end[0] < time()) || $begin[0] < time()): ?> past<?php endif; ?>">
