@@ -156,10 +156,11 @@ class Calendar {
 		$month = false;
 		global $site;
 
-		if (file_exists(__DIR__."/templates/".$template.".php")) {
-			require_once(__DIR__."/templates/".$template.".php");
+		if (file_exists(dirname(__FILE__)."/templates/".$template.".php")) {
+			require_once(dirname(__FILE__)."/templates/".$template.".php");
 		} else {
 			echo  'template not supported';
 		}
 	}
+}
 ?>
