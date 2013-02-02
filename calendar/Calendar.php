@@ -82,7 +82,6 @@ class Calendar {
 	 * 		The options array.
 	 */
 	function __construct($cEvents, $cOptions=array()) {
-		if (!$cEvents) return false;
 
 		$this->lang = @$cOptions['lang'];
 		$this->timezone = @$cOptions['timezone'];
@@ -94,6 +93,8 @@ class Calendar {
 		// Timezone must be set, before the events are parsed! Otherwise the
 		// timestamps will be adjusted.
 		$this->configure();
+		
+		if (!$cEvents) return false;
 
 		$this->events = $this->parseEvents($cEvents);
 
