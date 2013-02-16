@@ -81,13 +81,14 @@ class Calendar {
 	 * @param array $cOptions
 	 * 		The options array.
 	 */
-	function __construct($cEvents, $cOptions=array()) {
-
+	function __construct($cEvents, $cOptions=array()) {		
 		$this->lang = @$cOptions['lang'];
 		$this->timezone = @$cOptions['timezone'];
 		$this->dateFormat = @$cOptions['dateForm'];
 		$this->monthFormat = @$cOptions['monthForm'];
-		$this->hasTime = @$cOptions['hasTime'];
+		$this->hasTime = (array_key_exists('hasTime', $cOptions))
+			? $cOptions['hasTime']
+			: Calendar::$HAS_TIME;
 		$this->noEntryMsg = @$cOptions['noEntryMsg'];
 
 		// Timezone must be set, before the events are parsed! Otherwise the
@@ -106,8 +107,6 @@ class Calendar {
 
 	/** Sets the defined options if available. Sets the defaults otherwise. */
 	private function configure() {
-		if (!$this->hasTime) $this->hasTime = Calendar::$HAS_TIME;
-
 		if ($this->lang) {
 			setLocale(LC_TIME, $this->lang);
 		}

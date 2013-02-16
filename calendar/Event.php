@@ -59,7 +59,6 @@ class Event {
 		if (!$eventKey) return false;
 
 		$this->hasTime = $hasTime;
-		if (!$this->hasTime) $this->hasTime = Calendar::$HAS_TIME;
 
 		$time = $this->parseTime($eventKey);
 		$this->begin = getdate($time[0]);
