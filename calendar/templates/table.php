@@ -33,7 +33,7 @@
 		<td colspan="<?php echo count($eventsArr)+1; ?>"><?php echo utf8_encode($month) ?></td>
 	</tr>
 <?php endif; ?>
-	<tr<?php if (($end && $end[0] < time()) || $begin[0] < time()): ?> class="past" <?php endif; ?>>
+	<tr<?php if (($end && $end[0] < time()) || !$end && $begin[0] < time()): ?> class="past" <?php endif; ?>>
 		<td>
 			<time datetime="<?php echo gmdate("Y-m-d\TH:i:s\Z", $begin[0]);?>">
 				<?php echo strftime($this->dateFormat, $begin[0]); ?>
