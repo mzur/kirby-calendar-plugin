@@ -106,10 +106,10 @@ class Event {
 	public function getICal() {
 		$info = $this->info;
 
-		$returnStr  = "BEGIN:VEVENT \n";
+		$returnStr  = "BEGIN:VEVENT\n";
 
-		$returnStr .= "DTSTART:".gmdate("Ymd\TH:i:s\Z",$this->begin[0])."\n";
-		$returnStr .= "DTEND:".gmdate("Ymd\TH:i:s\Z",
+		$returnStr .= "DTSTART:".gmdate("Ymd\THis\Z",$this->begin[0])."\n";
+		$returnStr .= "DTEND:".gmdate("Ymd\THis\Z",
 			($this->end)? $this->end[0] : $this->begin[0])."\n";
 
 		if (array_key_exists('summary', $info))
@@ -121,8 +121,8 @@ class Event {
 		if (array_key_exists('location', $info))
 			$returnStr .= "LOCATION:".$info['location']."\n";
 
-		$returnStr .= "CLASS:PUBLIC \n";
-		$returnStr .= "END:VEVENT \n";
+		$returnStr .= "CLASS:PUBLIC\n";
+		$returnStr .= "END:VEVENT\n";
 
 		return $returnStr;
 	}
