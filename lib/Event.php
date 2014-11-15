@@ -6,14 +6,17 @@ class Event {
 	 * The string for the beginning date field key of an event.
 	 */
 	const begin_date_key = '_begin_date';
+
 	/**
 	 * The string for the beginning time field key of an event.
 	 */
 	const begin_time_key = '_begin_time';
+
 	/**
 	 * The string for the end date field key of an event.
 	 */
 	const end_date_key = '_end_date';
+
 	/**
 	 * The string for the end time field key of an event.
 	 */
@@ -70,8 +73,8 @@ class Event {
 
 		$this->has_end = true;
 
-		$this->has_begin_time = array_key_exists(self::begin_time_key, $event);
-		$this->has_end_time = array_key_exists(self::end_time_key, $event);
+		$this->has_begin_time = !empty(a::get($event, self::begin_time_key));
+		$this->has_end_time = !empty(a::get($event, self::end_time_key));
 
 		$this->begin_timestamp = self::get_timestamp(
 			a::get($event, self::begin_date_key),
@@ -147,93 +150,6 @@ class Event {
 	}
 
 	/**
-	 * @return The timestamp in seconds for the beginning of this event.
-	 */
-	public function get_begin_timestamp() {
-		return $this->begin_timestamp;
-	}
-
-	/**
-	 * @return The date array of the beginning of this event.
-	 */
-	public function get_begin_date() {
-		return getdate($this->begin_timestamp);
-	}
-
-	/**
-	 * @return The formatted string of the beginning of this event. Formatting
-	 * is done according to the language configuration of Kirby.
-	 */
-	public function get_begin_str() {
-		return strftime($this->time_format, $this->begin_timestamp);
-	}
-
-	/**
-	 * @return The timestamp in seconds for the ending of this event.
-	 */
-	public function get_end_timestamp() {
-		return $this->end_timestamp;
-	}
-
-	/**
-	 * @return The date array of the ending of this event.
-	 */
-	public function get_end_date() {
-		return getdate($this->end_timestamp);
-	}
-
-	/**
-	 * @return The formatted string of the ending of this event. Formatting
-	 * is done according to the language configuration of Kirby.
-	 */
-	public function get_end_str() {
-		/*
-		 * The convention for an event lasting all day is from midnight of the
-		 * day to midnight of the following day. But if we have an event lasting
-		 * from the 14th to 15th it would be printed as 14th (12 am) to 16th 
-		 * (12 am).
-		 * So if there is no custom ending time given, we go one second back, so
-		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
-		 */
-		$timestamp = ($this->has_end_time)
-			? $this->end_timestamp
-			: $this->end_timestamp - 1;
-		return strftime($this->time_format, $timestamp);
-	}
-
-	/**
-	 * @return All non-'private' field keys of this event.
-	 */
-	public function get_field_keys() {
-		return array_keys($this->fields);
-	}
-
-	/**
-	 * @param string $key The key of the field to get.
-	 * @return The content of the field or an empty string if it doesn't exist
-	 * in this event.
-	 */
-	public function get_field($key) {
-		return a::get($this->fields, $key, '');
-	}
-
-	/**
-	 * @return <code>true</code> if the event is past at the current time,
-	 * <code>false</code> otherwise
-	 */
-	public function is_past() {
-		return $this->end_timestamp < time();
-	}
-
-	/**
-	 * @return <code>true</code> if the event has an ending date/time
-	 * <code>false</code> otherwise
-	 */
-	public function has_end() {
-		return $this->has_end;
-	}
-
-	/**
 	 * Checks if all required keys are in the 'raw' event array. Throws an
 	 * exception if one is missing.
 	 *
@@ -270,6 +186,113 @@ class Event {
 		}
 
 		return $event;
+	}
+
+	/**
+	 * @return The timestamp in seconds for the beginning of this event.
+	 */
+	public function get_begin_timestamp() {
+		return $this->begin_timestamp;
+	}
+
+	/**
+	 * @return The date array of the beginning of this event.
+	 */
+	public function get_begin_date() {
+		return getdate($this->begin_timestamp);
+	}
+
+	/**
+	 * @return The formatted string of the beginning of this event. Formatting
+	 * is done according to the language configuration of Kirby.
+	 */
+	public function get_begin_str() {
+		return strftime($this->time_format, $this->begin_timestamp);
+	}
+
+	/**
+	 *	@return The formatted string of the beginning of this event wrapped in
+	 * a <code>time</code> element with <code>datetime</code> attribute.
+	 */
+	public function get_begin_html() {
+		return '<time datetime="' .
+			gmdate('Y-m-d\TH:i:s\Z', $this->begin_timestamp) . '">' .
+			$this->get_begin_str() . '</time>';
+	}
+
+	/**
+	 * @return The timestamp in seconds for the ending of this event.
+	 */
+	public function get_end_timestamp() {
+		return $this->end_timestamp;
+	}
+
+	/**
+	 * @return The date array of the ending of this event.
+	 */
+	public function get_end_date() {
+		return getdate($this->end_timestamp);
+	}
+
+	/**
+	 * @return The formatted string of the ending of this event. Formatting
+	 * is done according to the language configuration of Kirby.
+	 */
+	public function get_end_str() {
+		/*
+		 * The convention for an event lasting all day is from midnight of the
+		 * day to midnight of the following day. But if we have an event lasting
+		 * from the 14th to 15th it would be printed as 14th (12 am) to 16th 
+		 * (12 am).
+		 * So if there is no custom ending time given, we go one second back, so
+		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
+		 */
+		$timestamp = ($this->has_end_time)
+			? $this->end_timestamp
+			: $this->end_timestamp - 1;
+		return strftime($this->time_format, $timestamp);
+	}
+
+	/**
+	 *	@return The formatted string of the ending of this event wrapped in
+	 * a <code>time</code> element with <code>datetime</code> attribute.
+	 */
+	public function get_end_html() {
+		return '<time datetime="' .
+			gmdate('Y-m-d\TH:i:s\Z', $this->end_timestamp) . '">' .
+			$this->get_end_str() . '</time>';
+	}
+
+	/**
+	 * @return All non-'private' field keys of this event.
+	 */
+	public function get_field_keys() {
+		return array_keys($this->fields);
+	}
+
+	/**
+	 * @param string $key The key of the field to get.
+	 * @return The content of the field or an empty string if it doesn't exist
+	 * in this event.
+	 */
+	public function get_field($key) {
+		return a::get($this->fields, $key, '');
+	}
+
+	/**
+	 * @return <code>true</code> if the event is past at the current time,
+	 * <code>false</code> otherwise
+	 */
+	public function is_past() {
+		return $this->end_timestamp < time();
+	}
+
+	/**
+	 * @return <code>true</code> if the event has an ending date/time
+	 * <code>false</code> otherwise
+	 */
+	public function has_end() {
+		return $this->has_end;
 	}
 }
 

@@ -31,9 +31,10 @@
 <?php 	endif; ?>
 		<tr class="event<?php e($event->is_past(), ' past'); ?>">
 			<td>
-				<time datetime="<?php echo gmdate('Y-m-d\TH:i:s\Z', $event->get_begin_timestamp()); ?>"><?php echo $event->get_begin_str(); ?></time>
+				<?php echo $event->get_begin_html(); ?>
 <?php 	if ($event->has_end()): ?>
-				<br><?php echo l::get('to') ?><br><time datetime="<?php echo gmdate('Y-m-d\TH:i:s\Z', $event->get_end_timestamp()); ?>"><?php echo $event->get_end_str(); ?></time>
+				<br><?php echo l::get('to') ?>
+				<br><?php echo $event->get_end_html(); ?>
 <?php 	endif; ?>
 			</td>
 <?php 	foreach ($fields as $key => $value): ?>
