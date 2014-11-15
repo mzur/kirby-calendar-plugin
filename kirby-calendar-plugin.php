@@ -1,8 +1,13 @@
 <?php
-if(!class_exists('Calendar'))  require_once('lib/Calendar.php');
-if(!class_exists('Event')) require_once('lib/Event.php');
 
-function calendar($events, $options=array(), $template='table') {
-	$calendar = new Calendar($events, $options);
-	echo (empty($events)) ? $calendar->noEntry() : $calendar->cal($template);
+if (!class_exists('Calendar'))  require_once('lib/Calendar.php');
+if (!class_exists('Event')) require_once('lib/Event.php');
+
+function calendar($events = array()) {
+	try {
+		return new Calendar($events);
+	} catch (Exception $e) {
+		print "<strong>The calendar plugin threw an error</strong><br>" .
+			$e->getMessage();
+	}
 }

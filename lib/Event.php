@@ -1,164 +1,277 @@
 <?php
-/*
- ** The MIT License **
-
- Copyright (c) 2012 Christoph Bach (chbach), Martin Zurowietz (mzur)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-
-
- Home:
- 	<https://github.com/mzur/kirby-calendar-plugin>
-
- Authors:
- 	the Inspired Ones <http://the-inspired-ones.de/>
- 	 - Christoph Bach <http://christoph-bach.net/>
- 	 - Martin Zurowietz
-
- Requirements:
- 	- PHP 5.3
-*/
 
 class Event {
-	/** Begin time of the Event. */
-	private $begin = false;
-	/** End time of the event. */
-	private $end = false;
-	/** Other infos of the event. */
-	private $info = false;
-
-	/** Same as $hasTime of class Calendar. */
-	private $hasTime = false;
 
 	/**
-	 * Parses the input time key to an unix timestamp and sets the info.
-	 * @param String $eventKey
-	 *		The String Key from the yaml output containing begin and end time.
-	 * @param array $eventInfo
-	 * 		The info array from the yaml output which was associated to the eventKey.
-	 * @param boolean $hasTime
-	 * 		If true, the time will be calculated +23:59.
+	 * The string for the beginning date field key of an event.
 	 */
-	function __construct($eventKey, $eventInfo=array(), $hasTime=false) {
-		if (!$eventKey) return false;
-
-		$this->hasTime = $hasTime;
-
-		$time = $this->parseTime($eventKey);
-		$this->begin = getdate($time[0]);
-		$this->end = ($time[1]) ? getdate($time[1]) : false;
-
-		$this->info = $eventInfo;
-	}
-
+	const begin_date_key = '_begin_date';
 	/**
-	 * Sort function to perform an usort() on an array of Events.
-	 * @param Event $event1
-	 * 		First event.
-	 * @param Event $event2
-	 * 		Second event.
+	 * The string for the beginning time field key of an event.
 	 */
-	public static function SORT_EVENTS($event1, $event2) {
-		$begin1 = $event1->getBegin();
-		$begin2 = $event2->getBegin();
-		return (int) $begin1[0] - $begin2[0];
-	}
+	const begin_time_key = '_begin_time';
+	/**
+	 * The string for the end date field key of an event.
+	 */
+	const end_date_key = '_end_date';
+	/**
+	 * The string for the end time field key of an event.
+	 */
+	const end_time_key = '_end_time';
 
-	public function getBegin() {
-		return $this->begin;
-	}
+	/**
+	 * An array of field keys that are required to create an event.
+	 */
+	private static $required_keys;
 
-	public function getEnd() {
-		return $this->end;
-	}
+	/**
+	 * The timestamp of the beginning of this event.
+	 */
+	private $begin_timestamp;
 
-	public function getInfo() {
-		return $this->info;
-	}
+	/**
+	 * The timestamp of the end of this event. May be false if the event only
+	 * lasts a day.
+	 */
+	private $end_timestamp;
 
-	public function getColNames() {
-		return array_keys($this->info);
+	/**
+	 * Was an ending date given?
+	 */
+	private $has_end;
+
+	/**
+	 * Was a beginning time given for this event?
+	 */
+	private $has_begin_time;
+
+	/**
+	 * Was an ending time given for this event?
+	 */
+	private $has_end_time;
+
+	/**
+	 * Formatting of the output string of beginning and end times.
+	 */
+	private $time_format;
+
+	/**
+	 * Array of fields without the 'private' fields starting with a
+	 * <code>_</code>.
+	 */
+	private $fields;
+
+	/**
+	 * @param array $event The fields of this event including the 'private'
+	 * fields which start with a <code>_</code> (e.g. <code>_begin_date</code>).
+	 */
+	function __construct($event) {
+		self::validate($event);
+
+		$this->has_end = true;
+
+		$this->has_begin_time = array_key_exists(self::begin_time_key, $event);
+		$this->has_end_time = array_key_exists(self::end_time_key, $event);
+
+		$this->begin_timestamp = self::get_timestamp(
+			a::get($event, self::begin_date_key),
+			a::get($event, self::begin_time_key)
+		);
+
+		$this->end_timestamp = self::get_timestamp(
+			a::get($event, self::end_date_key),
+			a::get($event, self::end_time_key)
+		);
+
+		// if there is no end date given, use the same as the beginning date
+		if (!$this->end_timestamp) {
+			$this->end_timestamp = self::get_timestamp(
+				a::get($event, self::begin_date_key),
+				a::get($event, self::end_time_key)
+			);
+
+			// if there also is no end time given, there is no end at all
+			if (!$this->has_end_time) {
+				$this->has_end = false;
+			}
+		}
+
+		// if there is no end time given, the event lasts until end of the day
+		if (!array_key_exists(self::end_time_key, $event)) {
+			$this->end_timestamp = strtotime('tomorrow', $this->end_timestamp);
+		}
+
+		// only use the full format, if there were times given for this event
+		$this->time_format = ($this->has_begin_time || $this->has_end_time)
+			? l::get('calendar-full-time-format')
+			: l::get('calendar-time-format');
+
+		// remove the 'private' fields
+		$this->fields = self::filter_fields($event);
 	}
 
 	/**
-	 * Returns a string containing the event's data in iCalendar format.
-	 * Note that the event must have keys such as summary, description and
-	 * location defined to get a usable ical output.
+	 * Static initializer.
+	 */
+	public static function __init() {
+		self::$required_keys = array(
+			self::begin_date_key
+		);
+	}
+
+	/**
+	 * @param array $event A 'raw' event array.
+	 * @return A new Event instance.
+	 */
+	public static function instantiate($event) {
+		return new Event($event);
+	}
+
+	/**
+	 * @param Event $e1
+	 * @param Event $e2
+	 * @return Integer < 0 if $e1 is older than $e2, 0 if they happen at the
+	 * same time and > 0 if $e2 is older than $e1
+	 */
+	public static function compare($e1, $e2) {
+		return $e1->begin_timestamp - $e2->begin_timestamp;
+	}
+
+	/**
+	 * @param Event $e
+	 * @return <code>false</code> if the event is past, <code>true</code>
+	 * otherwise.
+	 */
+	public static function filter_past($e) {
+		return !$e->is_past();
+	}
+
+	/**
+	 * @return The timestamp in seconds for the beginning of this event.
+	 */
+	public function get_begin_timestamp() {
+		return $this->begin_timestamp;
+	}
+
+	/**
+	 * @return The date array of the beginning of this event.
+	 */
+	public function get_begin_date() {
+		return getdate($this->begin_timestamp);
+	}
+
+	/**
+	 * @return The formatted string of the beginning of this event. Formatting
+	 * is done according to the language configuration of Kirby.
+	 */
+	public function get_begin_str() {
+		return strftime($this->time_format, $this->begin_timestamp);
+	}
+
+	/**
+	 * @return The timestamp in seconds for the ending of this event.
+	 */
+	public function get_end_timestamp() {
+		return $this->end_timestamp;
+	}
+
+	/**
+	 * @return The date array of the ending of this event.
+	 */
+	public function get_end_date() {
+		return getdate($this->end_timestamp);
+	}
+
+	/**
+	 * @return The formatted string of the ending of this event. Formatting
+	 * is done according to the language configuration of Kirby.
+	 */
+	public function get_end_str() {
+		/*
+		 * The convention for an event lasting all day is from midnight of the
+		 * day to midnight of the following day. But if we have an event lasting
+		 * from the 14th to 15th it would be printed as 14th (12 am) to 16th 
+		 * (12 am).
+		 * So if there is no custom ending time given, we go one second back, so
+		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
+		 */
+		$timestamp = ($this->has_end_time)
+			? $this->end_timestamp
+			: $this->end_timestamp - 1;
+		return strftime($this->time_format, $timestamp);
+	}
+
+	/**
+	 * @return All non-'private' field keys of this event.
+	 */
+	public function get_field_keys() {
+		return array_keys($this->fields);
+	}
+
+	/**
+	 * @param string $key The key of the field to get.
+	 * @return The content of the field or an empty string if it doesn't exist
+	 * in this event.
+	 */
+	public function get_field($key) {
+		return a::get($this->fields, $key, '');
+	}
+
+	/**
+	 * @return <code>true</code> if the event is past at the current time,
+	 * <code>false</code> otherwise
+	 */
+	public function is_past() {
+		return $this->end_timestamp < time();
+	}
+
+	/**
+	 * @return <code>true</code> if the event has an ending date/time
+	 * <code>false</code> otherwise
+	 */
+	public function has_end() {
+		return $this->has_end;
+	}
+
+	/**
+	 * Checks if all required keys are in the 'raw' event array. Throws an
+	 * exception if one is missing.
 	 *
-	 * @return string, event info as ical data
+	 * @param array $event a 'raw' event array containing all fields
 	 */
-	public function getICal() {
-		$info = $this->info;
-
-		$returnStr  = "BEGIN:VEVENT\n";
-
-		$returnStr .= "DTSTART:".gmdate("Ymd\THis\Z",$this->begin[0])."\n";
-		$returnStr .= "DTEND:".gmdate("Ymd\THis\Z",
-			($this->end)? $this->end[0] : $this->begin[0])."\n";
-
-		if (array_key_exists('summary', $info))
-			$returnStr .= "SUMMARY:".$info['summary']."\n";
-
-		if (array_key_exists('description', $info))
-			$returnStr .= "DESCRIPTION:".$info['description']."\n";
-
-		if (array_key_exists('location', $info))
-			$returnStr .= "LOCATION:".$info['location']."\n";
-
-		$returnStr .= "CLASS:PUBLIC\n";
-		$returnStr .= "END:VEVENT\n";
-
-		return $returnStr;
-	}
-
-	/**
-	 * Parses the String key from the yaml outout to an array of timestamps
-	 * of begin and end time.
-	 * @param String $timeKey
-	 * 		The String of the yaml output containing the event time(s).
-	 * @return array
-	 * 		Array with begin timestamo at [0] and end timestamp at [1] if available
-	 */
-	private function parseTime($timeKey) {
-		$timeArray = explode(Calendar::$TIME_DELIMITER, $timeKey);
-		$timeArray[0] = (int) $this->timestamp($timeArray[0]);
-		$timeArray[1] = (@$timeArray[1]) ? (int) $this->timestamp($timeArray[1]) : false;
-
-		return $timeArray;
-	}
-
-	//TODO detect time automatically
-	/**
-	 * Converts a time string (e.g. "10.10.2012") to an unix timestamp.
-	 * @param String $timeString
-	 * 		The time string.
-	 * @return int
-	 *		The unix timestamp.
-	 */
-	private function timestamp($timeString) {
-		if ($timeString) {
-			return ($this->hasTime)
-				? strtotime($timeString)
-				: strtotime('+23 hours 59 minutes', strtotime($timeString));
-		} else {
-			return false;
+	private static function validate($event) {
+		$missing_keys = a::missing($event, self::$required_keys);
+		if (!empty($missing_keys)) {
+			$message = "Event creation failed because of the following missing " .
+				"required fields:\n" . a::show($missing_keys, false);
+			throw new Exception($message, 1);
 		}
 	}
+
+	/**
+	 * @param string $date the date, e.g. '01.01.1970'
+	 * @param string $time optional time, e.g. '10:00:00'
+	 * @return The date as a UNIX timestamp or <code>false</code> if there
+	 * was no $date given.
+	 */
+	private static function get_timestamp($date, $time = '') {
+		return ($date) ? strtotime($date . ' ' . $time) : false;
+	}
+
+	/**
+	 * @param array $event the 'raw' event array of fields.
+	 * @return the array of fields without the 'private' fields with keys
+	 */
+	private static function filter_fields($event) {
+		foreach (array_keys($event) as $key) {
+			if (str::startsWith($key, '_')) {
+				unset($event[$key]);
+			}
+		}
+
+		return $event;
+	}
 }
-?>
+
+// initialize the static variables
+event::__init();
