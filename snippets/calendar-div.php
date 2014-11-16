@@ -21,20 +21,16 @@
 ?>
 <?php 	if ($tmp_date['mon'] < $date['mon'] || $tmp_date['year'] < $date['year']): ?>
 	<div class="row month<?php e($date['mon'] < $current_date['mon'] or $date['year'] < $current_date['year'], ' past'); ?>">
-		<div class="item">
-			<?php echo strftime(l::get('calendar-month-format'), $date[0]); ?>
-		</div>
+		<div class="item"><?php echo strftime(l::get('calendar-month-format'), $date[0]); ?></div>
 	</div>
 <?php 	endif; ?>
 	<div class="row event<?php e($event->is_past(), ' past'); ?>">
-		<div class="item date">
-<?php
+		<div class="item date"><?php
 				echo $event->get_begin_html();
 				if ($event->has_end()) {
 					echo ' '.l::get('to').' '.$event->get_end_html();
 				}
-?>
-		</div>
+		?></div>
 <?php 	foreach ($fields as $key => $value): ?>
 		<div class="item"><?php echo $event->get_field($key); ?></div>
 <?php 	endforeach; ?>

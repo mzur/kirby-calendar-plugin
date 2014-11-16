@@ -1,6 +1,6 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: Home
+title: Calendar
 pages: false
 fields:
 	title:
@@ -13,8 +13,7 @@ fields:
 			<strong>{{summary}}</strong><br>
 			{{description}}<br>
 			Beginning: {{_begin_date}} {{_begin_time}}<br>
-			End: {{_end_date}} {{_end_time}}<br>
-			{{location}}
+			End: {{_end_date}} {{_end_time}}
 		fields:
 			summary:
 				label: Summary
@@ -40,7 +39,3 @@ fields:
 				label: Ending time
 				type: time
 				interval: 15
-				default: 
-			location:
-				label: Location
-				type: text

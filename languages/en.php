@@ -10,4 +10,3 @@ l::set('to', 'to');
 
 l::set('title', 'Title');
 l::set('description', 'Description');
-l::set('location', 'Location');
