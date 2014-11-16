@@ -9,42 +9,38 @@
 	else:
 ?>
 
-<table class="calendar">
-	<thead>
-		<tr>
-			<th><?php echo l::get('date'); ?></th>
+<section class="calendar">
+	<div class="row head">
+		<div class="item"><?php echo l::get('date'); ?></div>
 <?php foreach ($fields as $field): ?>
-			<th><?php echo $field; ?></th>
+		<div class="item"><?php echo $field; ?></div>
 <?php endforeach; ?>
-		</tr>
-	</thead>
-	<tbody>
+	</div>
 <?php foreach ($calendar->get_all_events() as $event):
 		$date = $event->get_begin_date();
 ?>
 <?php 	if ($tmp_date['mon'] < $date['mon'] || $tmp_date['year'] < $date['year']): ?>
-		<tr class="month<?php e($date['mon'] < $current_date['mon'] or $date['year'] < $current_date['year'], ' past'); ?>">
-			<td colspan="<?php echo count($fields)+1; ?>">
-				<?php echo strftime(l::get('calendar-month-format'), $date[0]); ?>
-			</td>
-		</tr>
+	<div class="row month<?php e($date['mon'] < $current_date['mon'] or $date['year'] < $current_date['year'], ' past'); ?>">
+		<div class="item">
+			<?php echo strftime(l::get('calendar-month-format'), $date[0]); ?>
+		</div>
+	</div>
 <?php 	endif; ?>
-		<tr class="event<?php e($event->is_past(), ' past'); ?>">
-			<td>
+	<div class="row event<?php e($event->is_past(), ' past'); ?>">
+		<div class="item date">
 <?php
 				echo $event->get_begin_html();
 				if ($event->has_end()) {
 					echo ' '.l::get('to').' '.$event->get_end_html();
 				}
 ?>
-			</td>
+		</div>
 <?php 	foreach ($fields as $key => $value): ?>
-			<td><?php echo $event->get_field($key); ?></td>
+		<div class="item"><?php echo $event->get_field($key); ?></div>
 <?php 	endforeach; ?>
-		</tr>
+	</div>
 <?php $tmp_date = $date; ?>
 <?php endforeach; ?>
-	</tbody>
-</table>
+</section>
 
 <?php endif; ?>

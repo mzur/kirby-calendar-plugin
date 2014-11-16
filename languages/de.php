@@ -11,4 +11,3 @@ l::set('to', 'bis');
 l::set('title', 'Titel');
 l::set('description', 'Beschreibung');
 l::set('location', 'Ort');
-l::set('price', 'Preis');

@@ -10,13 +10,14 @@ fields:
 		label: Calendar
 		type: structure
 		entry: >
-			<strong>{{title}}</strong><br>
+			<strong>{{summary}}</strong><br>
 			{{description}}<br>
 			Beginning: {{_begin_date}} {{_begin_time}}<br>
-			End: {{_end_date}} {{_end_time}}
+			End: {{_end_date}} {{_end_time}}<br>
+			{{location}}
 		fields:
-			title:
-				label: Title
+			summary:
+				label: Summary
 				type: text
 			description:
 				label: Description
@@ -30,6 +31,7 @@ fields:
 				label: Beginning time
 				type: time
 				interval: 15
+				default: 
 			_end_date:
 				label: Ending date
 				type: date
@@ -38,3 +40,7 @@ fields:
 				label: Ending time
 				type: time
 				interval: 15
+				default: 
+			location:
+				label: Location
+				type: text
