@@ -100,7 +100,7 @@ class Event {
 		}
 
 		// if there is no end time given, the event lasts until end of the day
-		if (!array_key_exists(self::end_time_key, $event)) {
+		if (!$this->has_end_time) {
 			$this->end_timestamp = strtotime('tomorrow', $this->end_timestamp);
 		}
 
