@@ -25,16 +25,15 @@ fields:
 			_begin_date:
 				label: Beginning date
 				type: date
-				format: YYYY-MM-DD
+				format: MM/DD/YYYY
 			_begin_time:
 				label: Beginning time
 				type: time
 				interval: 15
-				default: 
 			_end_date:
 				label: Ending date
 				type: date
-				format: YYYY-MM-DD
+				format: MM/DD/YYYY
 			_end_time:
 				label: Ending time
 				type: time
