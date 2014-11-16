@@ -49,25 +49,25 @@ Calendar:
   _end_date: 12/14/2014
   _end_time: 15:00
 - 
-  summary: My event for the whole day
-  _begin_date: 11/30/2014
-  description: This is the event
+  summary: My supercool event for the whole day
+  description: This wil be a nice event!
+  _begin_date: 10/01/2014
 ```
 
-The `calendar` field contains all events in a [YAML](http://getkirby.com/blog/structured-field-content) list. Each event has several fields, too, but only  `_begin_date` is mandatory (see [event-fields](#event-fields)). Event fields beginning with a `_` are special fields for this plugin and not pronted in the output. You can have as many other fields as you like.
+The `Calendar` field contains all events in a [YAML](http://getkirby.com/blog/structured-field-content) list. Each event has several own fields, too, but of them only  `_begin_date` is mandatory (see [event-fields](#event-fields)).  You can define as many other fields as you like.
 
 ### Calendar object
 
-Now let's git to the `calendar` template. Setting up the calendar object is really simple, you only have to do this:
+Now let's get to the `calendar` template. Setting up the calendar object is really simple; you only have to do this:
 
 ```php
 <?php $calendar = calendar($page->calendar()->yaml()); ?>
 ```
 ### Calendar snippet
 
-To produce any output, you have to use a calendar snippet. This enables you to even print multiple different versions of the same calendar in the same template. You can use one of the [snippets provided by this plugin](#snippets) or make your own.
+To produce any output, you have to use a calendar snippet. This enables you to print even multiple different versions of the same calendar in the same template! You can use one of the [snippets provided by this plugin](#snippets) or make your own.
 
-Typical usage of a snippet looks like this (here we use the [`calendar-table`](#table) snipet provided by the plugin):
+Typical usage of a snippet looks like this (here we use the [`table`](#table) snippet provided by the plugin):
 
 ```php
 <?php
@@ -81,7 +81,7 @@ Typical usage of a snippet looks like this (here we use the [`calendar-table`](#
 ?>
 ```
 
-There are two variables we are passing along to the snippet here. `$calendar` is the calendar object we created in the previous step. `$fields` is an associative array of all the event fields that should be displayed in this snippet. The keys of this array are the keys of the event fields specified in the calendar data; the values specify how these fields should be displayed (in this case it depends on the language of the site).
+There are two variables we are passing along to the snippet here: `$calendar` is the calendar object we created in the previous step and `$fields` is an associative array of all the event fields that should be displayed in this snippet. The keys of this array are the keys of the event fields specified in the calendar data; the values specify how these fields should be displayed (in this case it depends on the language of the site).
 
 So this is basically it. If you followed the instructions correctly, you should see the calendar printed on the page.
 
@@ -91,7 +91,7 @@ The calendar data is formatted to work perfectly with a [structure field](http:/
 
 ## Localisation
 
-The plugin is designed to fully support localization, thus requiring Kirby's language support to be enabled.
+The plugin is designed to fully support localisation, thus requiring Kirby's language support to be enabled.
 
 ### Language variables
 
@@ -106,7 +106,7 @@ See [here](http://php.net/manual/en/function.strftime.php) for more information 
 
 ### Timezone
 
-By default the plugin uses the uses the timezone of the server it is running on. The correct timezone is essential for correct `datetime` attributes or iCal output for example. To set the timezone manually you can use [`data_default_timezone_set`](http://php.net/manual/en/function.date-default-timezone-set.php) in the header snippet of your site like this:
+By default the plugin uses the uses the timezone of the server it is running on. The correct timezone is essential for correct `datetime` attributes or iCal output, for example. To set the timezone manually you can use [`data_default_timezone_set`](http://php.net/manual/en/function.date-default-timezone-set.php) in the header snippet of your site like this:
 
 ```php
 <?php date_default_timezone_set('Europe/Berlin'); ?>
@@ -120,7 +120,7 @@ The locale is set by Kirby's language configuration. So if you've set up everyth
 
 Events can have arbitrary fields. However there are the special fields for this plugin marked by a `_`-prefix:
 
-- `_begin_date`: The only **mandatory** field specifying the date the event begins.
+- `_begin_date`: The only **mandatory** field specifying the date, the event begins.
 - `_begin_time`: The time of the day the event begins.
 - `_end_date`: The date the event ends.
 - `_end_time`: The time of the day the event ends.
@@ -131,7 +131,7 @@ The behavior with different combinations of these fields is the following:
 
 - `_begin_date` and `_begin_time` given: The event lasts from the given time until midnight (12 am) of the following day.
 
-- `_begin_date` and `_end_time` given: The event lasts from midnight of the dat until the given time.
+- `_begin_date` and `_end_time` given: The event lasts from midnight until the given time of the day.
 
 - `_begin_date` and `_end_date` given: The event lasts from mindnight of the beginning day until midnight of the day after the ending day.
 
@@ -139,7 +139,7 @@ The behavior with different combinations of these fields is the following:
 
 There are two objects you can work with, `Calendar` and `Event`.
 
-### `Calendar` object
+### Calendar object
 
 The `Calendar` object is returned by the `calendar()` function of this plugin. It has the following functions:
 
@@ -147,15 +147,15 @@ The `Calendar` object is returned by the `calendar()` function of this plugin. I
 
 Returns an array of all the events of this calendar, including the past events.
 
-### get_events()
+#### get_events()
 
 Returns an array of all future events of this calendar.
 
-### get_event_fields()
+#### get_event_fields()
 
 Returns an array of all the event fields occurring in the events of this calendar.
 
-### `Event` object
+### Event object
 
 The `Event` objects are provided by the `Calendar` object. They have the following functions:
 
@@ -207,7 +207,7 @@ Returns `true` if this event is past at the current time, `false` otherwise.
 
 #### has_end()
 
-Returns `true` if the event was given an ending date or time.
+Returns `true` if the event was given an ending date or time, `false` otherwise.
 
 ## Snippets
 
@@ -291,7 +291,7 @@ Example output:
 ```ical
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//http://localhost/~martin/calendar//Kirby Calendar Plugin//EN 
+PRODID:-//http://example.com//Kirby Calendar Plugin//EN 
 METHOD:PUBLISH
 BEGIN:VEVENT
 DTSTART:20141001T000000Z 
