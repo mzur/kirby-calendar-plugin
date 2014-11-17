@@ -14,7 +14,7 @@ class Calendar {
 	 * Array of the aggregation of all present fields of the events. Not every 
 	 * event may contain every field.
 	 */
-	private $event_fields;
+	private $eventFields;
 
 	/**
 	 * @param array $events An array of 'raw' events. A raw event is an array
@@ -26,39 +26,39 @@ class Calendar {
 		// sort the events from old to new
 		usort($this->events, 'event::compare');
 
-		$this->event_fields = self::find_event_fields($this->events);
+		$this->eventFields = self::findEventFields($this->events);
 	}
 
 	/**
 	 * @return all events, even the ones that are already past.
 	 */
-	public function get_all_events() {
+	public function getAllEvents() {
 		return $this->events;
 	}
 
 	/**
 	 * @return all future events.
 	 */
-	public function get_events() {
-		return array_filter($this->events, 'event::filter_past');
+	public function getEvents() {
+		return array_filter($this->events, 'event::filterPast');
 	}
 
 	/**
 	 * @return all present fields of the events of this calendar.
 	 */
-	public function get_event_fields() {
-		return $this->event_fields;
+	public function getEventFields() {
+		return $this->eventFields;
 	}
 
 	/**
 	 * Aggregates all the fields present in the given event object.
 	 * @param array $events An array of Event objects.
 	 */
-	private static function find_event_fields($events) {
+	private static function findEventFields($events) {
 		$fields = array();
 
 		foreach ($events as $event) {
-			$fields = a::merge($fields, $event->get_field_keys());
+			$fields = a::merge($fields, $event->getFieldKeys());
 		}
 
 		// make an associative array with the same keys as values

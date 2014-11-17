@@ -19,7 +19,7 @@ c::set('languages', array(
 	array(
 		'code'    => 'en',
 		'name'    => 'English',
-		'locale'  => 'en_US',
+		'locale'  => 'en_US.UTF-8',
 		'default' => true,
 		'url'     => '/'
 	)
@@ -44,17 +44,17 @@ Title: Calendar
 Calendar: 
 -
   summary: My Event
-  _begin_date: 12/14/2014
-  _begin_time: 10:00
-  _end_date: 12/14/2014
-  _end_time: 15:00
+  _beginDate: 12/14/2014
+  _beginTime: 10:00
+  _endDate: 12/14/2014
+  _endTime: 15:00
 - 
   summary: My supercool event for the whole day
   description: This wil be a nice event!
-  _begin_date: 10/01/2014
+  _beginDate: 10/01/2014
 ```
 
-The `Calendar` field contains all events in a [YAML](http://getkirby.com/blog/structured-field-content) list. Each event has several own fields, too, but of them only  `_begin_date` is mandatory (see [event-fields](#event-fields)).  You can define as many other fields as you like.
+The `Calendar` field contains all events in a [YAML](http://getkirby.com/blog/structured-field-content) list. Each event has several own fields, too, but of them only  `_beginDate` is mandatory (see [event-fields](#event-fields)).  You can define as many other fields as you like.
 
 ### Calendar object
 
@@ -120,20 +120,20 @@ The locale is set by Kirby's language configuration. So if you've set up everyth
 
 Events can have arbitrary fields. However there are the special fields for this plugin marked by a `_`-prefix:
 
-- `_begin_date`: The only **mandatory** field specifying the date, the event begins.
-- `_begin_time`: The time of the day the event begins.
-- `_end_date`: The date the event ends.
-- `_end_time`: The time of the day the event ends.
+- `_beginDate`: The only **mandatory** field specifying the date, the event begins.
+- `_beginTime`: The time of the day the event begins.
+- `_endDate`: The date the event ends.
+- `_endTime`: The time of the day the event ends.
 
 The behavior with different combinations of these fields is the following:
 
-- only `_begin_date` given: The event lasts the whole day.
+- only `_beginDate` given: The event lasts the whole day.
 
-- `_begin_date` and `_begin_time` given: The event lasts from the given time until midnight (12 am) of the following day.
+- `_beginDate` and `_beginTime` given: The event lasts from the given time until midnight (12 am) of the following day.
 
-- `_begin_date` and `_end_time` given: The event lasts from midnight until the given time of the day.
+- `_beginDate` and `_endTime` given: The event lasts from midnight until the given time of the day.
 
-- `_begin_date` and `_end_date` given: The event lasts from mindnight of the beginning day until midnight of the day after the ending day.
+- `_beginDate` and `_endDate` given: The event lasts from mindnight of the beginning day until midnight of the day after the ending day.
 
 ## Functions
 
@@ -143,15 +143,15 @@ There are two objects you can work with, `Calendar` and `Event`.
 
 The `Calendar` object is returned by the `calendar()` function of this plugin. It has the following functions:
 
-#### get_all_events()
+#### getAllEvents()
 
 Returns an array of all the events of this calendar, including the past events.
 
-#### get_events()
+#### getEvents()
 
 Returns an array of all future events of this calendar.
 
-#### get_event_fields()
+#### getEventFields()
 
 Returns an array of all the event fields occurring in the events of this calendar.
 
@@ -159,53 +159,53 @@ Returns an array of all the event fields occurring in the events of this calenda
 
 The `Event` objects are provided by the `Calendar` object. They have the following functions:
 
-#### get_begin_timestamp()
+#### getBeginTimestamp()
 
 Returns the UNIX timestamp in seconds for the beginning of this event.
 
-#### get_begin_date()
+#### getBeginDate()
 
 Returns the [PHP date array](http://php.net/manual/en/function.getdate.php) of the beginning of this event.
 
-#### get_begin_str()
+#### getBeginStr()
 
 Returns the formatted string of the beginning of this event. Formatting is done according to the language configuration of Kirby. If the event was given a time, the `calendar-full-time-format` is used, `calendar-time-format` otherwise.
 
-#### get_begin_html()
+#### getBeginHtml()
 
 Returns the formatted string of the beginning of this event as a `time` element with `datetime` attribute.
 
-#### get_end_timestamp()
+#### getEndTimestamp()
 
 Returns the UNIX timestamp in seconds for the ending of this event.
 
-#### get_end_date()
+#### getEndDate()
 
 Returns the [PHP date array](http://php.net/manual/en/function.getdate.php) of the ending of this event.
 
-#### get_end_str()
+#### getEndStr()
 
 Returns the formatted string of the ending of this event. Formatting is done according to the language configuration of Kirby. If the event was given a time, the `calendar-full-time-format` is used, `calendar-time-format` otherwise.
 
-#### get_end_html()
+#### getEndHtml()
 
 Returns the formatted string of the ending of this event as a `time` element with `datetime` attribute.
 
-#### get_field_keys()
+#### getFieldKeys()
 
 Returns all field keys of this event that have no `_`-prefix.
 
-#### get_field($key)
+#### getField($key)
 
 Returns the content of the field or an empty string if it doesn't exist in this event.
 
 `$key`: The event field key whose value should be returned.
 
-#### is_past()
+#### isPast()
 
 Returns `true` if this event is past at the current time, `false` otherwise.
 
-#### has_end()
+#### hasEnd()
 
 Returns `true` if the event was given an ending date or time, `false` otherwise.
 

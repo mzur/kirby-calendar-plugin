@@ -5,58 +5,58 @@ class Event {
 	/**
 	 * The string for the beginning date field key of an event.
 	 */
-	const begin_date_key = '_begin_date';
+	const beginDateKey = '_beginDate';
 
 	/**
 	 * The string for the beginning time field key of an event.
 	 */
-	const begin_time_key = '_begin_time';
+	const beginTimeKey = '_beginTime';
 
 	/**
 	 * The string for the end date field key of an event.
 	 */
-	const end_date_key = '_end_date';
+	const endDateKey = '_endDate';
 
 	/**
 	 * The string for the end time field key of an event.
 	 */
-	const end_time_key = '_end_time';
+	const endTimeKey = '_endTime';
 
 	/**
 	 * An array of field keys that are required to create an event.
 	 */
-	private static $required_keys;
+	private static $requiredKeys;
 
 	/**
 	 * The timestamp of the beginning of this event.
 	 */
-	private $begin_timestamp;
+	private $beginTimestamp;
 
 	/**
 	 * The timestamp of the end of this event. May be false if the event only
 	 * lasts a day.
 	 */
-	private $end_timestamp;
+	private $endTimestamp;
 
 	/**
 	 * Was an ending date given?
 	 */
-	private $has_end;
+	private $hasEnd;
 
 	/**
 	 * Was a beginning time given for this event?
 	 */
-	private $has_begin_time;
+	private $hasBeginTime;
 
 	/**
 	 * Was an ending time given for this event?
 	 */
-	private $has_end_time;
+	private $hasEndTime;
 
 	/**
 	 * Formatting of the output string of beginning and end times.
 	 */
-	private $time_format;
+	private $timeFormat;
 
 	/**
 	 * Array of fields without the 'private' fields starting with a
@@ -66,59 +66,59 @@ class Event {
 
 	/**
 	 * @param array $event The fields of this event including the 'private'
-	 * fields which start with a <code>_</code> (e.g. <code>_begin_date</code>).
+	 * fields which start with a <code>_</code> (e.g. <code>_beginDate</code>).
 	 */
 	function __construct($event) {
 		self::validate($event);
 
-		$this->has_end = true;
+		$this->hasEnd = true;
 
-		$this->has_begin_time = !empty(a::get($event, self::begin_time_key));
-		$this->has_end_time = !empty(a::get($event, self::end_time_key));
+		$this->hasBeginTime = !empty(a::get($event, self::beginTimeKey));
+		$this->hasEndTime = !empty(a::get($event, self::endTimeKey));
 
-		$this->begin_timestamp = self::get_timestamp(
-			a::get($event, self::begin_date_key),
-			a::get($event, self::begin_time_key)
+		$this->beginTimestamp = self::getTimestamp(
+			a::get($event, self::beginDateKey),
+			a::get($event, self::beginTimeKey)
 		);
 
-		$this->end_timestamp = self::get_timestamp(
-			a::get($event, self::end_date_key),
-			a::get($event, self::end_time_key)
+		$this->endTimestamp = self::getTimestamp(
+			a::get($event, self::endDateKey),
+			a::get($event, self::endTimeKey)
 		);
 
 		// if there is no end date given, use the same as the beginning date
-		if (!$this->end_timestamp) {
-			$this->end_timestamp = self::get_timestamp(
-				a::get($event, self::begin_date_key),
-				a::get($event, self::end_time_key)
+		if (!$this->endTimestamp) {
+			$this->endTimestamp = self::getTimestamp(
+				a::get($event, self::beginDateKey),
+				a::get($event, self::endTimeKey)
 			);
 
 			// if there also is no end time given, there is no end at all
-			if (!$this->has_end_time) {
-				$this->has_end = false;
+			if (!$this->hasEndTime) {
+				$this->hasEnd = false;
 			}
 		}
 
 		// if there is no end time given, the event lasts until end of the day
-		if (!$this->has_end_time) {
-			$this->end_timestamp = strtotime('tomorrow', $this->end_timestamp);
+		if (!$this->hasEndTime) {
+			$this->endTimestamp = strtotime('tomorrow', $this->endTimestamp);
 		}
 
 		// only use the full format, if there were times given for this event
-		$this->time_format = ($this->has_begin_time || $this->has_end_time)
+		$this->timeFormat = ($this->hasBeginTime || $this->hasEndTime)
 			? l::get('calendar-full-time-format')
 			: l::get('calendar-time-format');
 
 		// remove the 'private' fields
-		$this->fields = self::filter_fields($event);
+		$this->fields = self::filterFields($event);
 	}
 
 	/**
 	 * Static initializer.
 	 */
 	public static function __init() {
-		self::$required_keys = array(
-			self::begin_date_key
+		self::$requiredKeys = array(
+			self::beginDateKey
 		);
 	}
 
@@ -137,7 +137,7 @@ class Event {
 	 * same time and > 0 if $e2 is older than $e1
 	 */
 	public static function compare($e1, $e2) {
-		return $e1->begin_timestamp - $e2->begin_timestamp;
+		return $e1->beginTimestamp - $e2->beginTimestamp;
 	}
 
 	/**
@@ -145,8 +145,8 @@ class Event {
 	 * @return <code>false</code> if the event is past, <code>true</code>
 	 * otherwise.
 	 */
-	public static function filter_past($e) {
-		return !$e->is_past();
+	public static function filterPast($e) {
+		return !$e->isPast();
 	}
 
 	/**
@@ -156,10 +156,10 @@ class Event {
 	 * @param array $event a 'raw' event array containing all fields
 	 */
 	private static function validate($event) {
-		$missing_keys = a::missing($event, self::$required_keys);
-		if (!empty($missing_keys)) {
+		$missingKeys = a::missing($event, self::$requiredKeys);
+		if (!empty($missingKeys)) {
 			$message = "Event creation failed because of the following missing " .
-				"required fields:\n" . a::show($missing_keys, false);
+				"required fields:\n" . a::show($missingKeys, false);
 			throw new Exception($message, 1);
 		}
 	}
@@ -170,7 +170,7 @@ class Event {
 	 * @return The date as a UNIX timestamp or <code>false</code> if there
 	 * was no $date given.
 	 */
-	private static function get_timestamp($date, $time = '') {
+	private static function getTimestamp($date, $time = '') {
 		return ($date) ? strtotime($date . ' ' . $time) : false;
 	}
 
@@ -178,7 +178,7 @@ class Event {
 	 * @param array $event the 'raw' event array of fields.
 	 * @return the array of fields without the 'private' fields with keys
 	 */
-	private static function filter_fields($event) {
+	private static function filterFields($event) {
 		foreach (array_keys($event) as $key) {
 			if (str::startsWith($key, '_')) {
 				unset($event[$key]);
@@ -191,54 +191,54 @@ class Event {
 	/**
 	 * @return The timestamp in seconds for the beginning of this event.
 	 */
-	public function get_begin_timestamp() {
-		return $this->begin_timestamp;
+	public function getBeginTimestamp() {
+		return $this->beginTimestamp;
 	}
 
 	/**
 	 * @return The date array of the beginning of this event.
 	 */
-	public function get_begin_date() {
-		return getdate($this->begin_timestamp);
+	public function getBeginDate() {
+		return getdate($this->beginTimestamp);
 	}
 
 	/**
 	 * @return The formatted string of the beginning of this event. Formatting
 	 * is done according to the language configuration of Kirby.
 	 */
-	public function get_begin_str() {
-		return strftime($this->time_format, $this->begin_timestamp);
+	public function getBeginStr() {
+		return strftime($this->timeFormat, $this->beginTimestamp);
 	}
 
 	/**
 	 *	@return The formatted string of the beginning of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function get_begin_html() {
+	public function getBeginHtml() {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->begin_timestamp) . '">' .
-			$this->get_begin_str() . '</time>';
+			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp) . '">' .
+			$this->getBeginStr() . '</time>';
 	}
 
 	/**
 	 * @return The timestamp in seconds for the ending of this event.
 	 */
-	public function get_end_timestamp() {
-		return $this->end_timestamp;
+	public function getEndTimestamp() {
+		return $this->endTimestamp;
 	}
 
 	/**
 	 * @return The date array of the ending of this event.
 	 */
-	public function get_end_date() {
-		return getdate($this->end_timestamp);
+	public function getEndDate() {
+		return getdate($this->endTimestamp);
 	}
 
 	/**
 	 * @return The formatted string of the ending of this event. Formatting
 	 * is done according to the language configuration of Kirby.
 	 */
-	public function get_end_str() {
+	public function getEndStr() {
 		/*
 		 * The convention for an event lasting all day is from midnight of the
 		 * day to midnight of the following day. But if we have an event lasting
@@ -247,26 +247,26 @@ class Event {
 		 * So if there is no custom ending time given, we go one second back, so
 		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
 		 */
-		$timestamp = ($this->has_end_time)
-			? $this->end_timestamp
-			: $this->end_timestamp - 1;
-		return strftime($this->time_format, $timestamp);
+		$timestamp = ($this->hasEndTime)
+			? $this->endTimestamp
+			: $this->endTimestamp - 1;
+		return strftime($this->timeFormat, $timestamp);
 	}
 
 	/**
 	 *	@return The formatted string of the ending of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function get_end_html() {
+	public function getEndHtml() {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->end_timestamp) . '">' .
-			$this->get_end_str() . '</time>';
+			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp) . '">' .
+			$this->getEndStr() . '</time>';
 	}
 
 	/**
 	 * @return All non-'private' field keys of this event.
 	 */
-	public function get_field_keys() {
+	public function getFieldKeys() {
 		return array_keys($this->fields);
 	}
 
@@ -275,7 +275,7 @@ class Event {
 	 * @return The content of the field or an empty string if it doesn't exist
 	 * in this event.
 	 */
-	public function get_field($key) {
+	public function getField($key) {
 		return a::get($this->fields, $key, '');
 	}
 
@@ -283,16 +283,16 @@ class Event {
 	 * @return <code>true</code> if the event is past at the current time,
 	 * <code>false</code> otherwise
 	 */
-	public function is_past() {
-		return $this->end_timestamp < time();
+	public function isPast() {
+		return $this->endTimestamp < time();
 	}
 
 	/**
 	 * @return <code>true</code> if the event has an ending date/time
 	 * <code>false</code> otherwise
 	 */
-	public function has_end() {
-		return $this->has_end;
+	public function hasEnd() {
+		return $this->hasEnd;
 	}
 }
 

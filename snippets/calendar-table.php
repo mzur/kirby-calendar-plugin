@@ -1,10 +1,10 @@
 <?php
-	$tmp_date = getdate(0);
-	$current_date = getdate();
+	$tmpDate = getdate(0);
+	$currentDate = getdate();
 ?>
 
 <?php
-	if (empty($calendar->get_all_events())): 
+	if (empty($calendar->getAllEvents())): 
 		echo l::get('calendar-no-entry');
 	else:
 ?>
@@ -19,26 +19,26 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php foreach ($calendar->get_all_events() as $event):
-		$date = $event->get_begin_date();
+<?php foreach ($calendar->getAllEvents() as $event):
+		$date = $event->getBeginDate();
 ?>
-<?php 	if ($tmp_date['mon'] < $date['mon'] || $tmp_date['year'] < $date['year']): ?>
-		<tr class="month<?php e($date['mon'] < $current_date['mon'] or $date['year'] < $current_date['year'], ' past'); ?>">
+<?php 	if ($tmpDate['mon'] < $date['mon'] || $tmpDate['year'] < $date['year']): ?>
+		<tr class="month<?php e($date['mon'] < $currentDate['mon'] or $date['year'] < $currentDate['year'], ' past'); ?>">
 			<td colspan="<?php echo count($fields)+1; ?>"><?php echo strftime(l::get('calendar-month-format'), $date[0]); ?></td>
 		</tr>
 <?php 	endif; ?>
-		<tr class="event<?php e($event->is_past(), ' past'); ?>">
+		<tr class="event<?php e($event->isPast(), ' past'); ?>">
 			<td><?php
-				echo $event->get_begin_html();
-				if ($event->has_end()) {
-					echo ' '.l::get('to').' '.$event->get_end_html();
+				echo $event->getBeginHtml();
+				if ($event->hasEnd()) {
+					echo ' '.l::get('to').' '.$event->getEndHtml();
 				}
 			?></td>
 <?php 	foreach ($fields as $key => $value): ?>
-			<td><?php echo $event->get_field($key); ?></td>
+			<td><?php echo $event->getField($key); ?></td>
 <?php 	endforeach; ?>
 		</tr>
-<?php $tmp_date = $date; ?>
+<?php $tmpDate = $date; ?>
 <?php endforeach; ?>
 	</tbody>
 </table>
