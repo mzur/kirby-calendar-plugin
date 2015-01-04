@@ -73,8 +73,8 @@ class Event {
 
 		$this->hasEnd = true;
 
-		$this->hasBeginTime = !empty(a::get($event, self::beginTimeKey));
-		$this->hasEndTime = !empty(a::get($event, self::endTimeKey));
+		$this->hasBeginTime = (bool) a::get($event, self::beginTimeKey);
+		$this->hasEndTime = (bool) a::get($event, self::endTimeKey);
 
 		$this->beginTimestamp = self::getTimestamp(
 			a::get($event, self::beginDateKey),
@@ -157,7 +157,7 @@ class Event {
 	 */
 	private static function validate($event) {
 		$missingKeys = a::missing($event, self::$requiredKeys);
-		if (!empty($missingKeys)) {
+		if ($missingKeys) {
 			$message = "Event creation failed because of the following missing " .
 				"required fields:\n" . a::show($missingKeys, false);
 			throw new Exception($message, 1);

@@ -2,14 +2,13 @@
 	$tmpDate = getdate(0);
 	$currentDate = getdate();
 ?>
+<section class="calendar">
 
 <?php
-	if (empty($calendar->getAllEvents())): 
+	if (!$calendar->getAllEvents()):
 		echo l::get('calendar-no-entry');
 	else:
 ?>
-
-<section class="calendar">
 	<div class="row head">
 		<div class="item"><?php echo l::get('date'); ?></div>
 <?php foreach ($fields as $field): ?>
@@ -37,6 +36,6 @@
 	</div>
 <?php $tmpDate = $date; ?>
 <?php endforeach; ?>
-</section>
 
 <?php endif; ?>
+</section>

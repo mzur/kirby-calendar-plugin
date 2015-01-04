@@ -3,13 +3,14 @@
 	$currentDate = getdate();
 ?>
 
-<?php
-	if (empty($calendar->getAllEvents())): 
-		echo l::get('calendar-no-entry');
-	else:
-?>
-
 <table class="calendar">
+
+<?php if (!$calendar->getAllEvents()): ?>
+
+	<tr><td><?php echo l::get('calendar-no-entry'); ?></td></tr>
+
+<?php else: ?>
+
 	<thead>
 		<tr>
 			<th><?php echo l::get('date'); ?></th>
@@ -41,6 +42,6 @@
 <?php $tmpDate = $date; ?>
 <?php endforeach; ?>
 	</tbody>
-</table>
 
 <?php endif; ?>
+</table>
