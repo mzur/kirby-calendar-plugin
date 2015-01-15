@@ -5,22 +5,22 @@ class Event {
 	/**
 	 * The string for the beginning date field key of an event.
 	 */
-	const beginDateKey = '_beginDate';
+	const beginDateKey = '_begin_date';
 
 	/**
 	 * The string for the beginning time field key of an event.
 	 */
-	const beginTimeKey = '_beginTime';
+	const beginTimeKey = '_begin_time';
 
 	/**
 	 * The string for the end date field key of an event.
 	 */
-	const endDateKey = '_endDate';
+	const endDateKey = '_end_date';
 
 	/**
 	 * The string for the end time field key of an event.
 	 */
-	const endTimeKey = '_endTime';
+	const endTimeKey = '_end_time';
 
 	/**
 	 * An array of field keys that are required to create an event.
@@ -66,7 +66,7 @@ class Event {
 
 	/**
 	 * @param array $event The fields of this event including the 'private'
-	 * fields which start with a <code>_</code> (e.g. <code>_beginDate</code>).
+	 * fields which start with a <code>_</code> (e.g. <code>_begin_date</code>).
 	 */
 	function __construct($event) {
 		self::validate($event);
