@@ -12,8 +12,8 @@ fields:
 		entry: >
 			<strong>{{summary}}</strong><br>
 			{{description}}<br>
-			Beginning: {{_beginDate}} {{_beginTime}}<br>
-			End: {{_endDate}} {{_endTime}}
+			Beginning: {{_begin_date}} {{_begin_time}}<br>
+			End: {{_end_date}} {{_end_time}}
 		fields:
 			summary:
 				label: Summary
@@ -22,19 +22,19 @@ fields:
 				label: Description
 				type: textarea
 				size: small
-			_beginDate:
+			_begin_date:
 				label: Beginning date
 				type: date
 				format: MM/DD/YYYY
-			_beginTime:
+			_begin_time:
 				label: Beginning time
 				type: time
 				interval: 15
-			_endDate:
+			_end_date:
 				label: Ending date
 				type: date
 				format: MM/DD/YYYY
-			_endTime:
+			_end_time:
 				label: Ending time
 				type: time
 				interval: 15
