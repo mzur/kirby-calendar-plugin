@@ -71,13 +71,13 @@ Typical usage of a snippet looks like this (here we use the [`table`](#table) sn
 
 ```php
 <?php
-	snippet('calendar-table', array(
-		'calendar'	=> $calendar,
-		'fields'		=> array(
-			'summary'		=> l::get('title'),
-			'description'	=> l::get('description')
-		)
-	));
+   snippet('calendar-table', array(
+      'calendar' => $calendar,
+      'fields' => array(
+         'summary' => l::get('title'),
+         'description' => l::get('description')
+      )
+   ));
 ?>
 ```
 
