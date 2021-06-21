@@ -1,5 +1,9 @@
 <?php
 
+namespace Mzur\KirbyCalendar;
+
+use Kirby\Toolkit\A;
+
 /**
  * A simple calendar object that mainly consists of a list of Event objects.
  */
@@ -20,11 +24,11 @@ class Calendar {
 	 * @param array $events An array of 'raw' events. A raw event is an array
 	 * of field => value pairs.
 	 */
-	function __construct($events = array()) {
+	function __construct($events = []) {
 		// intantiate all the given events to Event objects
-		$this->events = array_map('event::instantiate', $events);
+		$this->events = array_map('Mzur\\KirbyCalendar\\Event::instantiate', $events);
 		// sort the events from old to new
-		usort($this->events, 'event::compare');
+		usort($this->events, 'Mzur\\KirbyCalendar\\Event::compare');
 
 		$this->eventFields = self::findEventFields($this->events);
 	}
@@ -40,7 +44,7 @@ class Calendar {
 	 * @return all future events.
 	 */
 	public function getEvents() {
-		return array_filter($this->events, 'event::filterPast');
+		return array_filter($this->events, 'Mzur\\KirbyCalendar\\Event::filterPast');
 	}
 
 	/**
@@ -55,10 +59,10 @@ class Calendar {
 	 * @param array $events An array of Event objects.
 	 */
 	private static function findEventFields($events) {
-		$fields = array();
+		$fields = [];
 
 		foreach ($events as $event) {
-			$fields = a::merge($fields, $event->getFieldKeys());
+			$fields = A::merge($fields, $event->getFieldKeys());
 		}
 
 		// make an associative array with the same keys as values

@@ -1,32 +1,15 @@
 # kirby-calendar-plugin
 
-A plugin for the [Kirby 2 CMS](http://getkirby.com) to easily implement an event calendar.
+A plugin for the [Kirby CMS](http://getkirby.com) to easily implement an event calendar.
 
-The Calendar Plugin `v2` is **not** compatible with `v1`!
 
 ## Installation
 
-1. Put the `calendar` directory to `site/plugins/`.
+1. Clone this repository to `site/plugins/`.
 
-2. Put those snippets from `snippets` that you like to use to `site/snippets/` (or make your own).
+2. Make sure you have the language support of Kirby activated (even, if you only want to support one language).
 
-3. Put the language files of the `language` directory to `site/languages/`. If you already have existing language files, simply append the content to them. You only need to choose those languages that you actually want to support.
-
-4. Make sure you have the language support of Kirby activated (even, if you only want to support one language). Here is an example for activating the support with a single language in `site/config/config.php`:
-
-```php
-c::set('languages', array(
-	array(
-		'code'    => 'en',
-		'name'    => 'English',
-		'locale'  => 'en_US.UTF-8',
-		'default' => true,
-		'url'     => '/'
-	)
-));
-```
-
-For more information on the multi language support of Kirby, see [the docs](http://getkirby.com/docs/languages/setup).
+For more information on the multi language support of Kirby, see [the docs](https://getkirby.com/docs/guide/languages/introduction).
 
 ## Usage
 
@@ -54,14 +37,14 @@ Calendar:
   _begin_date: 10/01/2014
 ```
 
-The `Calendar` field contains all events in a [YAML](http://getkirby.com/blog/structured-field-content) list. Each event has several own fields, too, but of them only  `_begin_date` is mandatory (see [event-fields](#event-fields)).  You can define as many other fields as you like.
+The `Calendar` field contains all events as a [structure](https://getkirby.com/docs/reference/panel/fields/structure). Each event has several own fields, too, but of them only  `_begin_date` is mandatory (see [event-fields](#event-fields)).  You can define as many other fields as you like.
 
 ### Calendar object
 
 Now let's get to the `calendar` template. Setting up the calendar object is really simple; you only have to do this:
 
 ```php
-<?php $calendar = calendar($page->calendar()->yaml()); ?>
+<?php $calendar = new Mzur\KirbyCalendar\Calendar($page->calendar()->yaml()); ?>
 ```
 ### Calendar snippet
 
@@ -71,13 +54,13 @@ Typical usage of a snippet looks like this (here we use the [`table`](#table) sn
 
 ```php
 <?php
-   snippet('calendar-table', array(
+   snippet('calendar-table', [
       'calendar' => $calendar,
-      'fields' => array(
-         'summary' => l::get('title'),
-         'description' => l::get('description')
-      )
-   ));
+      'fields' => [
+         'summary' => t('title'),
+         'description' => t('description')
+      ]
+   ]);
 ?>
 ```
 
@@ -87,7 +70,7 @@ So this is basically it. If you followed the instructions correctly, you should 
 
 ### Panel
 
-The calendar data is formatted to work perfectly with a [structure field](http://getkirby.com/docs/cheatsheet/panel-fields/structure). Take a look at the `blueprints` directory of this repo to see a full example.
+The calendar data is formatted to work perfectly with a [structure field](https://getkirby.com/docs/reference/panel/fields/structure). Take a look at the `blueprints` directory of this repo to see a full example.
 
 ## Localisation
 
@@ -137,11 +120,11 @@ The behavior with different combinations of these fields is the following:
 
 ## Functions
 
-There are two objects you can work with, `Calendar` and `Event`.
+There are two classes you can work with, `Mzur\KirbyCalendar\Calendar` and `Mzur\KirbyCalendar\Event`.
 
-### Calendar object
+### Calendar class
 
-The `Calendar` object is returned by the `calendar()` function of this plugin. It has the following functions:
+The `Mzur\KirbyCalendar\Calendar` class has the following functions:
 
 #### getAllEvents()
 
@@ -155,9 +138,9 @@ Returns an array of all future events of this calendar.
 
 Returns an array of all the event fields occurring in the events of this calendar.
 
-### Event object
+### Event class
 
-The `Event` objects are provided by the `Calendar` object. They have the following functions:
+The `Mzur\KirbyCalendar\Event` class has the following functions:
 
 #### getBeginTimestamp()
 

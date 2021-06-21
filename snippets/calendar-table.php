@@ -7,13 +7,13 @@
 
 <?php if (!$calendar->getAllEvents()): ?>
 
-	<tr><td><?php echo l::get('calendar-no-entry'); ?></td></tr>
+	<tr><td><?php echo t('calendar-no-entry'); ?></td></tr>
 
 <?php else: ?>
 
 	<thead>
 		<tr>
-			<th><?php echo l::get('date'); ?></th>
+			<th><?php echo t('date'); ?></th>
 <?php foreach ($fields as $field): ?>
 			<th><?php echo $field; ?></th>
 <?php endforeach; ?>
@@ -25,14 +25,14 @@
 ?>
 <?php 	if ($tmpDate['mon'] < $date['mon'] || $tmpDate['year'] < $date['year']): ?>
 		<tr class="month<?php e($date['mon'] < $currentDate['mon'] or $date['year'] < $currentDate['year'], ' past'); ?>">
-			<td colspan="<?php echo count($fields)+1; ?>"><?php echo strftime(l::get('calendar-month-format'), $date[0]); ?></td>
+			<td colspan="<?php echo count($fields)+1; ?>"><?php echo strftime(t('calendar-month-format'), $date[0]); ?></td>
 		</tr>
 <?php 	endif; ?>
 		<tr class="event<?php e($event->isPast(), ' past'); ?>">
 			<td><?php
 				echo $event->getBeginHtml();
 				if ($event->hasEnd()) {
-					echo ' '.l::get('to').' '.$event->getEndHtml();
+					echo ' '.t('to').' '.$event->getEndHtml();
 				}
 			?></td>
 <?php 	foreach ($fields as $key => $value): ?>

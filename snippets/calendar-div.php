@@ -6,11 +6,11 @@
 
 <?php
 	if (!$calendar->getAllEvents()):
-		echo l::get('calendar-no-entry');
+		echo t('calendar-no-entry');
 	else:
 ?>
 	<div class="row head">
-		<div class="item"><?php echo l::get('date'); ?></div>
+		<div class="item"><?php echo t('date'); ?></div>
 <?php foreach ($fields as $field): ?>
 		<div class="item"><?php echo $field; ?></div>
 <?php endforeach; ?>
@@ -20,14 +20,14 @@
 ?>
 <?php 	if ($tmpDate['mon'] < $date['mon'] || $tmpDate['year'] < $date['year']): ?>
 	<div class="row month<?php e($date['mon'] < $currentDate['mon'] or $date['year'] < $currentDate['year'], ' past'); ?>">
-		<div class="item"><?php echo strftime(l::get('calendar-month-format'), $date[0]); ?></div>
+		<div class="item"><?php echo strftime(t('calendar-month-format'), $date[0]); ?></div>
 	</div>
 <?php 	endif; ?>
 	<div class="row event<?php e($event->isPast(), ' past'); ?>">
 		<div class="item date"><?php
 				echo $event->getBeginHtml();
 				if ($event->hasEnd()) {
-					echo ' '.l::get('to').' '.$event->getEndHtml();
+					echo ' '.t('to').' '.$event->getEndHtml();
 				}
 		?></div>
 <?php 	foreach ($fields as $key => $value): ?>

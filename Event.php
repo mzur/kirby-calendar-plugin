@@ -1,31 +1,39 @@
 <?php
 
+namespace Mzur\KirbyCalendar;
+
+use Exception;
+use Kirby\Toolkit\A;
+use Kirby\Toolkit\Str;
+
 class Event {
 
 	/**
 	 * The string for the beginning date field key of an event.
 	 */
-	const beginDateKey = '_begin_date';
+	const BEGIN_DATE_KEY = '_begin_date';
 
 	/**
 	 * The string for the beginning time field key of an event.
 	 */
-	const beginTimeKey = '_begin_time';
+	const BEGIN_TIME_KEY = '_begin_time';
 
 	/**
 	 * The string for the end date field key of an event.
 	 */
-	const endDateKey = '_end_date';
+	const END_DATE_KEY = '_end_date';
 
 	/**
 	 * The string for the end time field key of an event.
 	 */
-	const endTimeKey = '_end_time';
+	const END_TIME_KEY = '_end_time';
 
 	/**
 	 * An array of field keys that are required to create an event.
 	 */
-	private static $requiredKeys;
+	private static $requiredKeys = [
+		self::BEGIN_DATE_KEY,
+	];
 
 	/**
 	 * The timestamp of the beginning of this event.
@@ -73,24 +81,24 @@ class Event {
 
 		$this->hasEnd = true;
 
-		$this->hasBeginTime = (bool) a::get($event, self::beginTimeKey);
-		$this->hasEndTime = (bool) a::get($event, self::endTimeKey);
+		$this->hasBeginTime = (bool) A::get($event, self::BEGIN_TIME_KEY);
+		$this->hasEndTime = (bool) A::get($event, self::END_TIME_KEY);
 
 		$this->beginTimestamp = self::getTimestamp(
-			a::get($event, self::beginDateKey),
-			a::get($event, self::beginTimeKey)
+			A::get($event, self::BEGIN_DATE_KEY),
+			A::get($event, self::BEGIN_TIME_KEY)
 		);
 
 		$this->endTimestamp = self::getTimestamp(
-			a::get($event, self::endDateKey),
-			a::get($event, self::endTimeKey)
+			A::get($event, self::END_DATE_KEY),
+			A::get($event, self::END_TIME_KEY)
 		);
 
 		// if there is no end date given, use the same as the beginning date
 		if (!$this->endTimestamp) {
 			$this->endTimestamp = self::getTimestamp(
-				a::get($event, self::beginDateKey),
-				a::get($event, self::endTimeKey)
+				A::get($event, self::BEGIN_DATE_KEY),
+				A::get($event, self::END_TIME_KEY)
 			);
 
 			// if there also is no end time given, there is no end at all
@@ -106,20 +114,11 @@ class Event {
 
 		// only use the full format, if there were times given for this event
 		$this->timeFormat = ($this->hasBeginTime || $this->hasEndTime)
-			? l::get('calendar-full-time-format')
-			: l::get('calendar-time-format');
+			? t('calendar-full-time-format')
+			: t('calendar-time-format');
 
 		// remove the 'private' fields
 		$this->fields = self::filterFields($event);
-	}
-
-	/**
-	 * Static initializer.
-	 */
-	public static function __init() {
-		self::$requiredKeys = array(
-			self::beginDateKey
-		);
 	}
 
 	/**
@@ -156,10 +155,10 @@ class Event {
 	 * @param array $event a 'raw' event array containing all fields
 	 */
 	private static function validate($event) {
-		$missingKeys = a::missing($event, self::$requiredKeys);
+		$missingKeys = A::missing($event, self::$requiredKeys);
 		if ($missingKeys) {
 			$message = "Event creation failed because of the following missing " .
-				"required fields:\n" . a::show($missingKeys, false);
+				"required fields:\n" . A::show($missingKeys, false);
 			throw new Exception($message, 1);
 		}
 	}
@@ -180,7 +179,7 @@ class Event {
 	 */
 	private static function filterFields($event) {
 		foreach (array_keys($event) as $key) {
-			if (str::startsWith($key, '_')) {
+			if (Str::startsWith($key, '_')) {
 				unset($event[$key]);
 			}
 		}
@@ -276,7 +275,7 @@ class Event {
 	 * in this event.
 	 */
 	public function getField($key) {
-		return a::get($this->fields, $key, '');
+		return A::get($this->fields, $key, '');
 	}
 
 	/**
@@ -295,6 +294,3 @@ class Event {
 		return $this->hasEnd;
 	}
 }
-
-// initialize the static variables
-event::__init();
