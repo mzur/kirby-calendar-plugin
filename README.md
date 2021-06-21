@@ -5,7 +5,7 @@ A plugin for the [Kirby CMS](http://getkirby.com) to easily implement an event c
 
 ## Installation
 
-1. Clone this repository to `site/plugins/`.
+1. [Download](https://github.com/mzur/kirby-calendar-plugin/archive/refs/heads/master.zip) this repository and extract the directory to `site/plugins/`.
 
 2. Make sure you have the language support of Kirby activated (even, if you only want to support one language).
 
