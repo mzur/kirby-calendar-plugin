@@ -1,0 +1,12 @@
+{
+    "name": "mzur/kirby-calendar-plugin",
+    "description": "A plugin for the Kirby CMS to easily implement an event calendar.",
+    "type": "composer-plugin",
+    "license": "GNU GPL v2",
+    "autoload": {
+        "psr-4": {
+            "Mzur\\KirbyCalendarPlugin\\": "src/"
+        }
+    },
+    "require": {}
+}
