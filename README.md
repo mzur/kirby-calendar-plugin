@@ -70,7 +70,46 @@ So this is basically it. If you followed the instructions correctly, you should 
 
 ### Panel
 
-The calendar data is formatted to work perfectly with a [structure field](https://getkirby.com/docs/reference/panel/fields/structure). Take a look at the `blueprints` directory of this repo to see a full example.
+The calendar data is formatted to work perfectly with a [structure field](https://getkirby.com/docs/reference/panel/fields/structure). Here is an example blueprint:
+
+```yaml
+title: Events
+preset: page
+fields:
+	title:
+		label: Title
+		type:  text
+		readonly: true
+	events:
+		label: Events
+		type: structure
+		sortBy: _begin_date asc
+		fields:
+			_begin_date:
+				label: Start date
+				type: date
+				display: DD.MM.YYYY
+				required: true
+			_begin_time:
+				label: Start time
+				type: time
+				interval: 15
+				required: true
+			_end_date:
+				label: End date
+				type: date
+				display: DD.MM.YYYY
+				required: true
+			_end_time:
+				label: End time
+				type: time
+				interval: 15
+				required: true
+			summary:
+				label: Title
+				type: text
+				required: true
+```
 
 ## Localisation
 
