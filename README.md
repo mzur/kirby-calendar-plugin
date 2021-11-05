@@ -76,39 +76,39 @@ The calendar data is formatted to work perfectly with a [structure field](https:
 title: Events
 preset: page
 fields:
-	title:
-		label: Title
-		type:  text
-		readonly: true
-	events:
-		label: Events
-		type: structure
-		sortBy: _begin_date asc
-		fields:
-			_begin_date:
-				label: Start date
-				type: date
-				display: DD.MM.YYYY
-				required: true
-			_begin_time:
-				label: Start time
-				type: time
-				interval: 15
-				required: true
-			_end_date:
-				label: End date
-				type: date
-				display: DD.MM.YYYY
-				required: true
-			_end_time:
-				label: End time
-				type: time
-				interval: 15
-				required: true
-			summary:
-				label: Title
-				type: text
-				required: true
+   title:
+      label: Title
+      type:  text
+      readonly: true
+   events:
+      label: Events
+      type: structure
+      sortBy: _begin_date asc
+      fields:
+         _begin_date:
+            label: Start date
+            type: date
+            display: DD.MM.YYYY
+            required: true
+         _begin_time:
+            label: Start time
+            type: time
+            interval: 15
+            required: true
+         _end_date:
+            label: End date
+            type: date
+            display: DD.MM.YYYY
+            required: true
+         _end_time:
+            label: End time
+            type: time
+            interval: 15
+            required: true
+         summary:
+            label: Title
+            type: text
+            required: true
 ```
 
 ## Localisation
@@ -242,31 +242,31 @@ Displays all events (including the past ones) as a table. Only the event fields 
 ```html
 
 <table class="calendar">
-	<thead>
-		<tr>
-			<th>Date</th>
-			<th>Title</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr class="month past">
-			<td colspan="3">October 2014</td>
-		</tr>
-		<tr class="event past">
-			<td><time datetime="2014-10-01T00:00:00Z">01</time></td>
-			<td>My supercool event for the whole day</td>
-			<td>This wil be a nice event!</td>
-		</tr>
-		<tr class="month">
-			<td colspan="3">December 2014</td>
-		</tr>
-		<tr class="event">
-			<td><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time> to <time datetime="2014-12-15T23:45:00Z">15 11:45:00 PM</time></td>
-			<td>Event</td>
-			<td></td>
-		</tr>
-	</tbody>
+   <thead>
+      <tr>
+         <th>Date</th>
+         <th>Title</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr class="month past">
+         <td colspan="3">October 2014</td>
+      </tr>
+      <tr class="event past">
+         <td><time datetime="2014-10-01T00:00:00Z">01</time></td>
+         <td>My supercool event for the whole day</td>
+         <td>This wil be a nice event!</td>
+      </tr>
+      <tr class="month">
+         <td colspan="3">December 2014</td>
+      </tr>
+      <tr class="event">
+         <td><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time> to <time datetime="2014-12-15T23:45:00Z">15 11:45:00 PM</time></td>
+         <td>Event</td>
+         <td></td>
+      </tr>
+   </tbody>
 </table>
 ```
 
@@ -276,27 +276,27 @@ Displays all events (including the past ones) as a div layout. Only the event fi
 
 ```html
 <section class="calendar">
-	<div class="row head">
-		<div class="item">Date</div>
-		<div class="item">Title</div>
-		<div class="item">Description</div>
-	</div>
-	<div class="row month past">
-		<div class="item">October 2014</div>
-	</div>
-	<div class="row event past">
-		<div class="item date"><time datetime="2014-10-01T00:00:00Z">01</time></div>
-		<div class="item">My supercool event for the whole day</div>
-		<div class="item">This wil be a nice event!</div>
-	</div>
-	<div class="row month">
-		<div class="item">December 2014</div>
-	</div>
-	<div class="row event">
-		<div class="item date"><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time> to <time datetime="2014-12-15T23:45:00Z">15 11:45:00 PM</time></div>
-		<div class="item">Event</div>
-		<div class="item"></div>
-	</div>
+   <div class="row head">
+      <div class="item">Date</div>
+      <div class="item">Title</div>
+      <div class="item">Description</div>
+   </div>
+   <div class="row month past">
+      <div class="item">October 2014</div>
+   </div>
+   <div class="row event past">
+      <div class="item date"><time datetime="2014-10-01T00:00:00Z">01</time></div>
+      <div class="item">My supercool event for the whole day</div>
+      <div class="item">This wil be a nice event!</div>
+   </div>
+   <div class="row month">
+      <div class="item">December 2014</div>
+   </div>
+   <div class="row event">
+      <div class="item date"><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time> to <time datetime="2014-12-15T23:45:00Z">15 11:45:00 PM</time></div>
+      <div class="item">Event</div>
+      <div class="item"></div>
+   </div>
 </section>
 ```
 
@@ -313,21 +313,21 @@ Example output:
 ```ical
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//http://example.com//Kirby Calendar Plugin//EN 
+PRODID:-//http://example.com//Kirby Calendar Plugin//EN
 METHOD:PUBLISH
 BEGIN:VEVENT
-DTSTART:20141001T000000Z 
-DTEND:20141002T000000Z 
-SUMMARY:My supercool event for the whole day 
-DESCRIPTION:This wil be a nice event! 
-LOCATION: 
+DTSTART:20141001T000000Z
+DTEND:20141002T000000Z
+SUMMARY:My supercool event for the whole day
+DESCRIPTION:This wil be a nice event!
+LOCATION:
 END:VEVENT
 BEGIN:VEVENT
-DTSTART:20141214T100000Z 
-DTEND:20141215T234500Z 
-SUMMARY:Event 
-DESCRIPTION: 
-LOCATION: 
+DTSTART:20141214T100000Z
+DTEND:20141215T234500Z
+SUMMARY:Event
+DESCRIPTION:
+LOCATION:
 END:VEVENT
 END:VCALENDAR
 ```
@@ -338,6 +338,6 @@ Displays a set number of future events as a list. The number of events to displa
 
 ```html
 <ul class="teaser">
-	<li><strong><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time></strong> Event</li>
+   <li><strong><time datetime="2014-12-14T10:00:00Z">14 10:00:00 AM</time></strong> Event</li>
 </ul>
 ```
