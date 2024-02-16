@@ -205,18 +205,19 @@ class Event {
 	 * @return The formatted string of the beginning of this event. Formatting
 	 * is done according to the language configuration of Kirby.
 	 */
-	public function getBeginStr() {
-		return strftime($this->timeFormat, $this->beginTimestamp);
+	public function getBeginStr($languageCode) {
+    return \IntlDateFormatter::formatObject(
+      \DateTime::createFromFormat('U', $this->beginTimestamp), $this->timeFormat, $languageCode);
 	}
 
 	/**
 	 *	@return The formatted string of the beginning of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function getBeginHtml() {
+	public function getBeginHtml($languageCode = 'en') {
 		return '<time datetime="' .
 			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp) . '">' .
-			$this->getBeginStr() . '</time>';
+			$this->getBeginStr($languageCode) . '</time>';
 	}
 
 	/**
@@ -237,7 +238,7 @@ class Event {
 	 * @return The formatted string of the ending of this event. Formatting
 	 * is done according to the language configuration of Kirby.
 	 */
-	public function getEndStr() {
+	public function getEndStr($languageCode) {
 		/*
 		 * The convention for an event lasting all day is from midnight of the
 		 * day to midnight of the following day. But if we have an event lasting
@@ -249,17 +250,18 @@ class Event {
 		$timestamp = ($this->hasEndTime)
 			? $this->endTimestamp
 			: $this->endTimestamp - 1;
-		return strftime($this->timeFormat, $timestamp);
+    return \IntlDateFormatter::formatObject(
+      \DateTime::createFromFormat('U', $timestamp), $this->timeFormat, $languageCode);
 	}
 
 	/**
 	 *	@return The formatted string of the ending of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function getEndHtml() {
+	public function getEndHtml($languageCode = 'en') {
 		return '<time datetime="' .
 			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp) . '">' .
-			$this->getEndStr() . '</time>';
+			$this->getEndStr($languageCode) . '</time>';
 	}
 
 	/**

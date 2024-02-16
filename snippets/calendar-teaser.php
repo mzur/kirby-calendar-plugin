@@ -1,9 +1,12 @@
 <ul class="teaser">
 <?php
+  if (!empty($languageCode)) {
+    $languageCode = 'en';
+  }
 	foreach ($calendar->getEvents() as $event):
 		if (--$items < 0) break;
 ?>
-	<li><strong><?php echo $event->getBeginHtml(); ?></strong><?php
+	<li><strong><?php echo $event->getBeginHtml($languageCode); ?></strong><?php
 		foreach ($fields as $key => $value) {
 			echo ' '.$event->getField($key);
 		}
