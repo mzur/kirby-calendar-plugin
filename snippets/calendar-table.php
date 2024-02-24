@@ -1,9 +1,9 @@
 <?php
 	$tmpDate = getdate(0);
 	$currentDate = getdate();
-  if (!empty($languageCode)) {
-    $languageCode = 'en';
-  }
+	if (!isset($languageCode)) {
+		$languageCode = 'en';
+	}
 ?>
 
 <table class="calendar">

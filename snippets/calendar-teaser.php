@@ -1,8 +1,8 @@
 <ul class="teaser">
 <?php
-  if (!empty($languageCode)) {
-    $languageCode = 'en';
-  }
+	if (!isset($languageCode)) {
+		$languageCode = 'en';
+	}
 	foreach ($calendar->getEvents() as $event):
 		if (--$items < 0) break;
 ?>

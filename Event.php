@@ -202,12 +202,13 @@ class Event {
 	}
 
 	/**
+	 * @param string $languageCode the language used to create the date string, e.g. 'de'
 	 * @return The formatted string of the beginning of this event. Formatting
-	 * is done according to the language configuration of Kirby.
+	 * is done according to the language code given as argument.
 	 */
 	public function getBeginStr($languageCode) {
-    return \IntlDateFormatter::formatObject(
-      \DateTime::createFromFormat('U', $this->beginTimestamp), $this->timeFormat, $languageCode);
+		return \IntlDateFormatter::formatObject(
+			\DateTime::createFromFormat('U', $this->beginTimestamp), $this->timeFormat, $languageCode);
 	}
 
 	/**
@@ -235,8 +236,9 @@ class Event {
 	}
 
 	/**
+	 * @param string $languageCode the language used to create the date string, e.g. 'de'
 	 * @return The formatted string of the ending of this event. Formatting
-	 * is done according to the language configuration of Kirby.
+	 * is done according to the language code given as argument.
 	 */
 	public function getEndStr($languageCode) {
 		/*
@@ -250,8 +252,8 @@ class Event {
 		$timestamp = ($this->hasEndTime)
 			? $this->endTimestamp
 			: $this->endTimestamp - 1;
-    return \IntlDateFormatter::formatObject(
-      \DateTime::createFromFormat('U', $timestamp), $this->timeFormat, $languageCode);
+		return \IntlDateFormatter::formatObject(
+			\DateTime::createFromFormat('U', $timestamp), $this->timeFormat, $languageCode);
 	}
 
 	/**
