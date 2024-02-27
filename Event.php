@@ -109,7 +109,12 @@ class Event {
 
 		// if there is no end time given, the event lasts until end of the day
 		if (!$this->hasEndTime) {
-			$this->endTimestamp = strtotime('tomorrow', $this->endTimestamp);
+			$endDate = new \DateTime();
+			$this->endTimestamp =
+				$endDate
+				->setTimestamp($this->endTimestamp)
+				->setTime(23, 59, 59)
+				->getTimestamp();
 		}
 
 		// only use the full format, if there were times given for this event
@@ -170,7 +175,13 @@ class Event {
 	 * was no $date given.
 	 */
 	private static function getTimestamp($date, $time = '') {
-		return ($date) ? strtotime($date . ' ' . $time) : false;
+		if ($date) {
+			$dateTime = new \DateTime($date . ' ' . $time,
+				new \DateTimeZone(date_default_timezone_get()));
+			return $dateTime->getTimestamp();
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -208,7 +219,10 @@ class Event {
 	 */
 	public function getBeginStr($languageCode) {
 		return \IntlDateFormatter::formatObject(
-			\DateTime::createFromFormat('U', $this->beginTimestamp), $this->timeFormat, $languageCode);
+			\DateTime::createFromFormat('U', $this->beginTimestamp)
+				->setTimezone(new \DateTimeZone(date_default_timezone_get())),
+			$this->timeFormat,
+			$languageCode);
 	}
 
 	/**
@@ -253,7 +267,10 @@ class Event {
 			? $this->endTimestamp
 			: $this->endTimestamp - 1;
 		return \IntlDateFormatter::formatObject(
-			\DateTime::createFromFormat('U', $timestamp), $this->timeFormat, $languageCode);
+			\DateTime::createFromFormat('U', $timestamp)
+				->setTimezone(new \DateTimeZone(date_default_timezone_get())),
+			$this->timeFormat,
+			$languageCode);
 	}
 
 	/**
