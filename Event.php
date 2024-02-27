@@ -171,8 +171,7 @@ class Event {
 	 */
 	private static function getTimestamp($date, $time = '') {
 		if ($date) {
-			return new \DateTimeImmutable($date . ' ' . $time,
-				new \DateTimeZone(date_default_timezone_get()));
+			return new \DateTimeImmutable($date . ' ' . $time);
 		} else {
 			return false;
 		}
