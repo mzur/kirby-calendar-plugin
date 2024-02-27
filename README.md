@@ -193,9 +193,9 @@ Returns the [PHP date array](http://php.net/manual/en/function.getdate.php) of t
 
 Returns the formatted string of the beginning of this event. Formatting is done according to the language configuration of Kirby. If the event was given a time, the `calendar-full-time-format` is used, `calendar-time-format` otherwise.
 
-#### getBeginHtml()
+#### getBeginHtml($languageCode = 'en')
 
-Returns the formatted string of the beginning of this event as a `time` element with `datetime` attribute.
+Returns the formatted string of the beginning of this event as a `time` element with `datetime` attribute. Formatting is based on the passed language code.
 
 #### getEndTimestamp()
 
@@ -209,9 +209,9 @@ Returns the [PHP date array](http://php.net/manual/en/function.getdate.php) of t
 
 Returns the formatted string of the ending of this event. Formatting is done according to the language configuration of Kirby. If the event was given a time, the `calendar-full-time-format` is used, `calendar-time-format` otherwise.
 
-#### getEndHtml()
+#### getEndHtml($languageCode = 'en')
 
-Returns the formatted string of the ending of this event as a `time` element with `datetime` attribute.
+Returns the formatted string of the ending of this event as a `time` element with `datetime` attribute. Formatting is based on the passed language code.
 
 #### getFieldKeys()
 

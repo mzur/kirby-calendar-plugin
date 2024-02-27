@@ -1,6 +1,9 @@
 <?php
 	$tmpDate = getdate(0);
 	$currentDate = getdate();
+	if (!isset($languageCode)) {
+		$languageCode = 'en';
+	}
 ?>
 <section class="calendar">
 
@@ -25,9 +28,9 @@
 <?php 	endif; ?>
 	<div class="row event<?php e($event->isPast(), ' past'); ?>">
 		<div class="item date"><?php
-				echo $event->getBeginHtml();
+				echo $event->getBeginHtml($languageCode);
 				if ($event->hasEnd()) {
-					echo ' '.t('to').' '.$event->getEndHtml();
+					echo ' '.t('to').' '.$event->getEndHtml($languageCode);
 				}
 		?></div>
 <?php 	foreach ($fields as $key => $value): ?>

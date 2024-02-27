@@ -1,6 +1,9 @@
 <?php
 	$tmpDate = getdate(0);
 	$currentDate = getdate();
+	if (!isset($languageCode)) {
+		$languageCode = 'en';
+	}
 ?>
 
 <table class="calendar">
@@ -30,9 +33,9 @@
 <?php 	endif; ?>
 		<tr class="event<?php e($event->isPast(), ' past'); ?>">
 			<td><?php
-				echo $event->getBeginHtml();
+				echo $event->getBeginHtml($languageCode);
 				if ($event->hasEnd()) {
-					echo ' '.t('to').' '.$event->getEndHtml();
+					echo ' '.t('to').' '.$event->getEndHtml($languageCode);
 				}
 			?></td>
 <?php 	foreach ($fields as $key => $value): ?>
