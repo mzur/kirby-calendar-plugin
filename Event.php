@@ -84,19 +84,19 @@ class Event {
 		$this->hasBeginTime = (bool) A::get($event, self::BEGIN_TIME_KEY);
 		$this->hasEndTime = (bool) A::get($event, self::END_TIME_KEY);
 
-		$this->beginTimestamp = self::getTimestamp(
+		$this->beginTimestamp = self::getDate(
 			A::get($event, self::BEGIN_DATE_KEY),
 			A::get($event, self::BEGIN_TIME_KEY)
 		);
 
-		$this->endTimestamp = self::getTimestamp(
+		$this->endTimestamp = self::getDate(
 			A::get($event, self::END_DATE_KEY),
 			A::get($event, self::END_TIME_KEY)
 		);
 
 		// if there is no end date given, use the same as the beginning date
 		if (!$this->endTimestamp) {
-			$this->endTimestamp = self::getTimestamp(
+			$this->endTimestamp = self::getDate(
 				A::get($event, self::BEGIN_DATE_KEY),
 				A::get($event, self::END_TIME_KEY)
 			);
@@ -166,10 +166,10 @@ class Event {
 	/**
 	 * @param string $date the date, e.g. '01.01.1970'
 	 * @param string $time optional time, e.g. '10:00:00'
-	 * @return The date as a UNIX timestamp or <code>false</code> if there
+	 * @return The date as a DateTimeImmutable object or <code>false</code> if there
 	 * was no $date given.
 	 */
-	private static function getTimestamp($date, $time = '') {
+	private static function getDate($date, $time = '') {
 		if ($date) {
 			return new \DateTimeImmutable($date . ' ' . $time);
 		} else {
