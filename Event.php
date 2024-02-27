@@ -109,12 +109,7 @@ class Event {
 
 		// if there is no end time given, the event lasts until end of the day
 		if (!$this->hasEndTime) {
-			$endDate = new \DateTime();
-			$this->endTimestamp =
-				$endDate
-				->setTimestamp($this->endTimestamp)
-				->setTime(23, 59, 59)
-				->getTimestamp();
+			$this->endTimestamp->setTime(23, 59, 59);
 		}
 
 		// only use the full format, if there were times given for this event
@@ -141,7 +136,7 @@ class Event {
 	 * same time and > 0 if $e2 is older than $e1
 	 */
 	public static function compare($e1, $e2) {
-		return $e1->beginTimestamp - $e2->beginTimestamp;
+		return $e1->beginTimestamp <=> $e2->beginTimestamp;
 	}
 
 	/**
@@ -176,9 +171,8 @@ class Event {
 	 */
 	private static function getTimestamp($date, $time = '') {
 		if ($date) {
-			$dateTime = new \DateTime($date . ' ' . $time,
+			return new \DateTimeImmutable($date . ' ' . $time,
 				new \DateTimeZone(date_default_timezone_get()));
-			return $dateTime->getTimestamp();
 		} else {
 			return false;
 		}
@@ -202,14 +196,14 @@ class Event {
 	 * @return The timestamp in seconds for the beginning of this event.
 	 */
 	public function getBeginTimestamp() {
-		return $this->beginTimestamp;
+		return $this->beginTimestamp->getTimestamp();
 	}
 
 	/**
 	 * @return The date array of the beginning of this event.
 	 */
 	public function getBeginDate() {
-		return getdate($this->beginTimestamp);
+		return getdate($this->beginTimestamp->getTimestamp());
 	}
 
 	/**
@@ -219,8 +213,7 @@ class Event {
 	 */
 	public function getBeginStr($languageCode) {
 		return \IntlDateFormatter::formatObject(
-			\DateTime::createFromFormat('U', $this->beginTimestamp)
-				->setTimezone(new \DateTimeZone(date_default_timezone_get())),
+			$this->beginTimestamp,
 			$this->timeFormat,
 			$languageCode);
 	}
@@ -231,7 +224,7 @@ class Event {
 	 */
 	public function getBeginHtml($languageCode = 'en') {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp) . '">' .
+			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp->getTimestamp()) . '">' .
 			$this->getBeginStr($languageCode) . '</time>';
 	}
 
@@ -239,14 +232,14 @@ class Event {
 	 * @return The timestamp in seconds for the ending of this event.
 	 */
 	public function getEndTimestamp() {
-		return $this->endTimestamp;
+		return $this->endTimestamp->getTimestamp();
 	}
 
 	/**
 	 * @return The date array of the ending of this event.
 	 */
 	public function getEndDate() {
-		return getdate($this->endTimestamp);
+		return getdate($this->endTimestamp->getTimestamp());
 	}
 
 	/**
@@ -255,20 +248,8 @@ class Event {
 	 * is done according to the language code given as argument.
 	 */
 	public function getEndStr($languageCode) {
-		/*
-		 * The convention for an event lasting all day is from midnight of the
-		 * day to midnight of the following day. But if we have an event lasting
-		 * from the 14th to 15th it would be printed as 14th (12 am) to 16th 
-		 * (12 am).
-		 * So if there is no custom ending time given, we go one second back, so
-		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
-		 */
-		$timestamp = ($this->hasEndTime)
-			? $this->endTimestamp
-			: $this->endTimestamp - 1;
 		return \IntlDateFormatter::formatObject(
-			\DateTime::createFromFormat('U', $timestamp)
-				->setTimezone(new \DateTimeZone(date_default_timezone_get())),
+			$this->endTimestamp,
 			$this->timeFormat,
 			$languageCode);
 	}
@@ -279,7 +260,7 @@ class Event {
 	 */
 	public function getEndHtml($languageCode = 'en') {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp) . '">' .
+			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp->getTimestamp()) . '">' .
 			$this->getEndStr($languageCode) . '</time>';
 	}
 
@@ -304,7 +285,7 @@ class Event {
 	 * <code>false</code> otherwise
 	 */
 	public function isPast() {
-		return $this->endTimestamp < time();
+		return $this->endTimestamp < new \DateTime("now");
 	}
 
 	/**
