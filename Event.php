@@ -84,19 +84,19 @@ class Event {
 		$this->hasBeginTime = (bool) A::get($event, self::BEGIN_TIME_KEY);
 		$this->hasEndTime = (bool) A::get($event, self::END_TIME_KEY);
 
-		$this->beginTimestamp = self::getTimestamp(
+		$this->beginTimestamp = self::getDate(
 			A::get($event, self::BEGIN_DATE_KEY),
 			A::get($event, self::BEGIN_TIME_KEY)
 		);
 
-		$this->endTimestamp = self::getTimestamp(
+		$this->endTimestamp = self::getDate(
 			A::get($event, self::END_DATE_KEY),
 			A::get($event, self::END_TIME_KEY)
 		);
 
 		// if there is no end date given, use the same as the beginning date
 		if (!$this->endTimestamp) {
-			$this->endTimestamp = self::getTimestamp(
+			$this->endTimestamp = self::getDate(
 				A::get($event, self::BEGIN_DATE_KEY),
 				A::get($event, self::END_TIME_KEY)
 			);
@@ -109,7 +109,7 @@ class Event {
 
 		// if there is no end time given, the event lasts until end of the day
 		if (!$this->hasEndTime) {
-			$this->endTimestamp = strtotime('tomorrow', $this->endTimestamp);
+			$this->endTimestamp->setTime(23, 59, 59);
 		}
 
 		// only use the full format, if there were times given for this event
@@ -136,7 +136,7 @@ class Event {
 	 * same time and > 0 if $e2 is older than $e1
 	 */
 	public static function compare($e1, $e2) {
-		return $e1->beginTimestamp - $e2->beginTimestamp;
+		return $e1->beginTimestamp <=> $e2->beginTimestamp;
 	}
 
 	/**
@@ -166,11 +166,15 @@ class Event {
 	/**
 	 * @param string $date the date, e.g. '01.01.1970'
 	 * @param string $time optional time, e.g. '10:00:00'
-	 * @return The date as a UNIX timestamp or <code>false</code> if there
+	 * @return The date as a DateTimeImmutable object or <code>false</code> if there
 	 * was no $date given.
 	 */
-	private static function getTimestamp($date, $time = '') {
-		return ($date) ? strtotime($date . ' ' . $time) : false;
+	private static function getDate($date, $time = '') {
+		if ($date) {
+			return new \DateTimeImmutable($date . ' ' . $time);
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -191,75 +195,72 @@ class Event {
 	 * @return The timestamp in seconds for the beginning of this event.
 	 */
 	public function getBeginTimestamp() {
-		return $this->beginTimestamp;
+		return $this->beginTimestamp->getTimestamp();
 	}
 
 	/**
 	 * @return The date array of the beginning of this event.
 	 */
 	public function getBeginDate() {
-		return getdate($this->beginTimestamp);
+		return getdate($this->beginTimestamp->getTimestamp());
 	}
 
 	/**
+	 * @param string $languageCode the language used to create the date string, e.g. 'de'
 	 * @return The formatted string of the beginning of this event. Formatting
-	 * is done according to the language configuration of Kirby.
+	 * is done according to the language code given as argument.
 	 */
-	public function getBeginStr() {
-		return strftime($this->timeFormat, $this->beginTimestamp);
+	public function getBeginStr($languageCode) {
+		return \IntlDateFormatter::formatObject(
+			$this->beginTimestamp,
+			$this->timeFormat,
+			$languageCode);
 	}
 
 	/**
 	 *	@return The formatted string of the beginning of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function getBeginHtml() {
+	public function getBeginHtml($languageCode = 'en') {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp) . '">' .
-			$this->getBeginStr() . '</time>';
+			gmdate('Y-m-d\TH:i:s\Z', $this->beginTimestamp->getTimestamp()) . '">' .
+			$this->getBeginStr($languageCode) . '</time>';
 	}
 
 	/**
 	 * @return The timestamp in seconds for the ending of this event.
 	 */
 	public function getEndTimestamp() {
-		return $this->endTimestamp;
+		return $this->endTimestamp->getTimestamp();
 	}
 
 	/**
 	 * @return The date array of the ending of this event.
 	 */
 	public function getEndDate() {
-		return getdate($this->endTimestamp);
+		return getdate($this->endTimestamp->getTimestamp());
 	}
 
 	/**
+	 * @param string $languageCode the language used to create the date string, e.g. 'de'
 	 * @return The formatted string of the ending of this event. Formatting
-	 * is done according to the language configuration of Kirby.
+	 * is done according to the language code given as argument.
 	 */
-	public function getEndStr() {
-		/*
-		 * The convention for an event lasting all day is from midnight of the
-		 * day to midnight of the following day. But if we have an event lasting
-		 * from the 14th to 15th it would be printed as 14th (12 am) to 16th 
-		 * (12 am).
-		 * So if there is no custom ending time given, we go one second back, so
-		 * it prints as 14th (12 am) to 15th (11:59:59 pm).
-		 */
-		$timestamp = ($this->hasEndTime)
-			? $this->endTimestamp
-			: $this->endTimestamp - 1;
-		return strftime($this->timeFormat, $timestamp);
+	public function getEndStr($languageCode) {
+		return \IntlDateFormatter::formatObject(
+			$this->endTimestamp,
+			$this->timeFormat,
+			$languageCode);
 	}
 
 	/**
 	 *	@return The formatted string of the ending of this event wrapped in
 	 * a <code>time</code> element with <code>datetime</code> attribute.
 	 */
-	public function getEndHtml() {
+	public function getEndHtml($languageCode = 'en') {
 		return '<time datetime="' .
-			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp) . '">' .
-			$this->getEndStr() . '</time>';
+			gmdate('Y-m-d\TH:i:s\Z', $this->endTimestamp->getTimestamp()) . '">' .
+			$this->getEndStr($languageCode) . '</time>';
 	}
 
 	/**
@@ -283,7 +284,7 @@ class Event {
 	 * <code>false</code> otherwise
 	 */
 	public function isPast() {
-		return $this->endTimestamp < time();
+		return $this->endTimestamp < new \DateTime("now");
 	}
 
 	/**
